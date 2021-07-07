@@ -15,7 +15,8 @@ export class OAVTInstrument {
      * @returns The Tracker ID.
      */
     addTracker(tracker: OAVTTrackerInterface): number {
-        let trackerId = this.nextTrackerId++
+        let trackerId = this.nextTrackerId
+        this.nextTrackerId++
         tracker.trackerId = trackerId
         this.trackers[trackerId] = tracker
         return trackerId

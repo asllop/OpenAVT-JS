@@ -1,22 +1,7 @@
-//{
-//  "compilerOptions": {
-//    "module": "commonjs",
-//    "target": "es5",
-//    "lib": [ "es2015", "dom" ],
-//    "declaration": true,
-//    "sourceMap": true,
-//    "outDir": "./dist"
-//  },
-//  "include": [
-//    "src/**/*"
-//  ]
-//}
-
 {
   "compilerOptions": {
-    /* Basic Options */
-    "target": "ES2015" /* Build to ES2015 */,
-    "module": "ES2015" /* using ES2015 modules */,
+    "target": "es5" /* Build to ES2015 */,
+    "module": "commonjs" /* using ES2015 modules */,
     "lib": ["es2015", "dom"] /* Using ES2015 features and DOM APIs  */,
     "declaration": true /* Generates corresponding'.d.ts' files. */,
     "declarationDir": "./dist/typings/" /* build '.d.ts' files to ./dist/typeings */,
