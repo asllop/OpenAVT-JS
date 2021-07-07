@@ -2,7 +2,7 @@
   "name": "openavt-js",
   "version": "0.1.0",
   "description": "OpenAVT for Javascript-based platforms like web browsers, smart TVs, chromecast and similar.",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
