@@ -11,7 +11,7 @@
     "clean+build:dev": "npm run clean && npm run build:dev",
     "build": "tsc && webpack --mode production",
     "build:dev": "tsc && webpack --mode development",
-    "clean": "rm -rf dist _bundles",
+    "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "python -m SimpleHTTPServer 8000 &"
   },
@@ -24,6 +24,7 @@
     "webpack-cli": "^4.7.2"
   },
   "files": [
-    "/dist"
+    "/dist/esm",
+    "/dist/typings"
   ]
 }
