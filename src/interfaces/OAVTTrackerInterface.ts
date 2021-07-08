@@ -1,10 +1,11 @@
 import { OAVTEvent } from "../models/OAVTEvent";
 import { OAVTState } from "../models/OAVTState";
+import { OAVTComponentInterface } from "./OAVTComponentInterface";
 
 /**
- * OpenAVT base interface for instrument tracker components.
+ * OpenAVT interface for instrument tracker components.
  */
- export interface OAVTTrackerInterface {
+ export interface OAVTTrackerInterface extends OAVTComponentInterface {
     /**
      * Init an event.
      *
