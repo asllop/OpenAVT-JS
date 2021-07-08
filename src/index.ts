@@ -1,5 +1,6 @@
 export { OAVTInstrument } from './OAVTInstrument'
 export { OAVTEvent } from './models/OAVTEvent'
-export { OAVTAction, OAVTActions as action } from './models/OAVTAction'
+export { OAVTAction } from './models/OAVTAction'
+export { OAVTAttribute } from './models/OAVTAttribute'
 export { OAVTState } from './models/OAVTState'
 export { OAVTTrackerInterface } from './interfaces/OAVTTrackerInterface'

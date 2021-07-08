@@ -7,8 +7,9 @@
     <script>
         console.log("Hello Example1");
 
-        var instrument = new OpenAVT.OAVTInstrument();
-        var trackerId = instrument.addTracker({"whatever": 666});
+        let instrument = new OpenAVT.OAVTInstrument();
+        let trackerId = instrument.addTracker({"whatever": 666});
+
         console.log(instrument.getTrackers()[trackerId]);
     </script>
 </body>

@@ -1,9 +1,13 @@
 import { OAVTTrackerInterface } from "./interfaces/OAVTTrackerInterface";
 
+/**
+ * An OpenAVT Instrument.
+ */
 export class OAVTInstrument {
     private trackers : {[key: number]: OAVTTrackerInterface} = {}
     private nextTrackerId : number = 0
 
+    //TODO: add args to constructor
     constructor() {
         console.log("Created a new OAVTInstrument instance")
     }
