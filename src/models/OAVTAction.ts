@@ -4,7 +4,7 @@ import { OAVTAttribute } from "./OAVTAttribute"
  * An OpenAVT Action.
  */
 export class OAVTAction {
-    private actionName: String
+    private actionName: string
     private timeAttribute: OAVTAttribute
 
     /**
@@ -13,9 +13,26 @@ export class OAVTAction {
      * @param name Action name.
      * @param attribute Time since attribute.
      */
-    constructor(name: String, attribute = new OAVTAttribute("timeSince" + name)) {
+    constructor(name: string, attribute = new OAVTAttribute("timeSince" + name)) {
         this.actionName = name
         this.timeAttribute = attribute
+    }
+
+    /**
+     * Get action name.
+     * 
+     * @returns Action name.
+     */
+    getActionName(): string {
+        return this.actionName
+    }
+
+    /**
+     * Get time-since attibute.
+     * @returns Time-since attribute.
+     */
+    getTimeAttribute(): OAVTAttribute {
+        return this.timeAttribute
     }
 
     /** Tracker Init action. Sent when a tracker is started. */

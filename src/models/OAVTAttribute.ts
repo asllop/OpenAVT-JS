@@ -2,15 +2,24 @@
  * An OpenAVT Attribute.
  */
 export class OAVTAttribute {
-    private attributeName: String
+    private attributeName: string
 
     /**
      * OAVTAttribute constructor.
      * 
      * @param name Attribute name.
      */
-    constructor(name: String) {
+    constructor(name: string) {
         this.attributeName = name
+    }
+
+    /**
+     * Get attribute name.
+     * 
+     * @returns Attribute name.
+     */
+    getAttributeName(): string {
+        return this.attributeName
     }
 
     /** Tracker Target attribute. The target of the tracker (i.e.: AVPlayer, IMA, ...). */
