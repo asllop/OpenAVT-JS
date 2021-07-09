@@ -15,6 +15,7 @@ export class OAVTInstrument {
 
     /**
      * OAVTInstrument constructor.
+     * 
      * @param hub An object conforming to OAVTHubInterface.
      * @param backend An object conforming to OAVTBackendInterface.
      * @param metricalc (optional) An object conforming to OAVTMetricalcInterface.
@@ -140,6 +141,49 @@ export class OAVTInstrument {
         }
         else {
             return false
+        }
+    }
+
+    /**
+     * Tell the instrument chain everything is ready to start.
+     * 
+     * It calls the `instrumentReady` method of all chain components (trackers, hub, metricalc and backend).
+     */
+    ready() {
+        if (this.backend != null) {
+            this.backend.instrumentReady(this)
+        }
+        if (this.metricalc != null) {
+            this.metricalc.instrumentReady(this)
+        }
+        if (this.hub != null) {
+            this.hub.instrumentReady(this)
+        }
+        Object.keys(this.trackers).forEach(key => {
+            let tracker = this.trackers[key]
+            tracker.instrumentReady(this)
+        })
+    }
+
+    /**
+     * Tell the instrument chain the job is done and we are shutting down.
+     * 
+     * It calls the `endOfService` method of all chain components (trackers, hub, metricalc and backend).
+     */
+    shutdown() {
+        Object.keys(this.trackers).forEach(key => {
+            let tracker = this.trackers[key]
+            tracker.endOfService()
+            //TODO: remove tracker getters
+        })
+        if (this.hub != null) {
+            this.hub.endOfService()
+        }
+        if (this.metricalc != null) {
+            this.metricalc.endOfService()
+        }
+        if (this.backend != null) {
+            this.backend.endOfService()
         }
     }
 }
