@@ -3,17 +3,20 @@ import { OAVTHubInterface } from "./interfaces/OAVTHubInterface";
 import { OAVTMetricalcInterface } from "./interfaces/OAVTMetricalcInterface";
 import { OAVTTrackerInterface } from "./interfaces/OAVTTrackerInterface";
 import { OAVTAction } from "./models/OAVTAction";
+import { OAVTAttribute } from "./models/OAVTAttribute";
 import { OAVTEvent } from "./models/OAVTEvent";
 
 /**
  * An OpenAVT Instrument.
  */
 export class OAVTInstrument {
+    private instrumentId : string
     private trackers : {[key: number]: OAVTTrackerInterface} = {}
     private nextTrackerId : number = 0
     private hub : OAVTHubInterface = null
     private metricalc : OAVTMetricalcInterface = null
     private backend : OAVTBackendInterface = null
+    private timeSince : {[key: string]: number} = {}
 
     /**
      * OAVTInstrument constructor.
@@ -23,6 +26,7 @@ export class OAVTInstrument {
      * @param metricalc (optional) An object conforming to OAVTMetricalcInterface.
      */
     constructor(hub: OAVTHubInterface, backend: OAVTBackendInterface, metricalc: OAVTMetricalcInterface = null) {
+        this.instrumentId = Math.floor(Math.random() * 1000000000).toString()
         this.setHub(hub)
         this.setMetricalc(metricalc)
         this.setBackend(backend)
@@ -172,8 +176,8 @@ export class OAVTInstrument {
      * It calls the `endOfService` method of all chain components (trackers, hub, metricalc and backend).
      */
     shutdown() {
-        Object.keys(this.trackers).forEach(key => {
-            let tracker = this.trackers[key]
+        Object.keys(this.trackers).forEach(trackerId => {
+            let tracker = this.trackers[trackerId]
             tracker.endOfService()
             //TODO: remove tracker getters
         })
@@ -211,16 +215,34 @@ export class OAVTInstrument {
                     }
                     this.backend.sendEvent(hubEvent)
 
-                    //TODO: update time since
+                    // Update time since
+                    this.timeSince[event.getAction().getTimeAttribute().getAttributeName()] = new Date().getTime()
                 }
             }
         }
     }
 
     // Private methods
-
+    
     private generateEvent(action: OAVTAction, tracker: OAVTTrackerInterface): OAVTEvent {
-        //TODO: fill attributes
-        return new OAVTEvent(action)
+        let event = new OAVTEvent(action)
+        
+        // Generate attributes
+        this.generateSenderId(tracker, event)
+        this.generateTimeSince(event)
+        
+        return event
+    }
+    
+    private generateSenderId(tracker: OAVTTrackerInterface, event: OAVTEvent) {
+        event.setAttribute(OAVTAttribute.senderId, this.instrumentId + "-" + tracker.trackerId)
+    }
+    
+    private generateTimeSince(event: OAVTEvent) {
+        Object.keys(this.timeSince).forEach(attributeName => {
+            let timestamp = this.timeSince[attributeName]
+            let timeSince = new Date().getTime() - timestamp
+            event.setAttribute(new OAVTAttribute(attributeName), timeSince)
+        })
     }
 }
