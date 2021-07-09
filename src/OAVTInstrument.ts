@@ -84,4 +84,62 @@ export class OAVTInstrument {
     getTrackers(): {[key: number]: OAVTTrackerInterface} {
         return this.trackers
     }
+
+    /**
+     * Get a tracker.
+     * 
+     * @param trackerId Tracker ID.
+     * @returns Tracker instance.
+     */
+    getTracker(trackerId: number): OAVTTrackerInterface {
+        return this.trackers[trackerId]
+    }
+
+    /**
+     * Get the hub.
+     * 
+     * @returns Hub instance.
+     */
+    getHub(): OAVTHubInterface {
+        return this.hub
+    }
+
+    /**
+     * Get the metricalc.
+     * 
+     * @returns Metricalc instance.
+     */
+    getMetricalc(): OAVTMetricalcInterface {
+        return this.metricalc
+    }
+
+    /**
+     * Get the backend.
+     * 
+     * @returns Backend instance.
+     */
+    getBackend(): OAVTBackendInterface {
+        return this.backend
+    }
+
+    /**
+     * Remove a tracker.
+     * 
+     * @param trackerId Tracker ID.
+     * @returns True if removed, False otherwise.
+     */
+    removeTracker(trackerId: number): boolean {
+        if (this.trackers[trackerId] != null) {
+            let tracker = this.getTracker(trackerId)
+            if (tracker != null) {
+                tracker.endOfService()
+                //TODO: remove tracker getters
+            }
+            delete this.trackers[trackerId]
+            return true
+        }
+        else {
+            return false
+        }
+    }
 }

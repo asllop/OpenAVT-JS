@@ -8,7 +8,23 @@
         console.log("Hello Example1");
 
         let instrument = new OpenAVT.OAVTInstrument();
-        let trackerId = instrument.addTracker({"whatever": 666});
+
+        let fakeTracker = {
+            trackerId: null,
+            state: new OpenAVT.OAVTState(),
+            endOfService: function() {
+                console.log("Fake Tracker enfOfSerice")
+            },
+            instrumentReady: function(instrument) {
+                console.log("Fake Tracker instrumentReady", instrument)
+            },
+            initEvent: function(ev) {
+                console.log("Fake Tracker initEvent", ev)
+                return ev
+            }
+        }
+
+        let trackerId = instrument.addTracker(fakeTracker);
 
         console.log(instrument.getTrackers()[trackerId]);
     </script>
