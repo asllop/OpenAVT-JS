@@ -55,6 +55,8 @@
         instrument.ready()
 
         console.log(instrument.getTrackers()[trackerId]);
+
+        instrument.emit(OpenAVT.OAVTAction.Ping, trackerId)
     </script>
 </body>
 </html>

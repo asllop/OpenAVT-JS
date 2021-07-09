@@ -2,6 +2,8 @@ import { OAVTBackendInterface } from "./interfaces/OAVTBackendInterface";
 import { OAVTHubInterface } from "./interfaces/OAVTHubInterface";
 import { OAVTMetricalcInterface } from "./interfaces/OAVTMetricalcInterface";
 import { OAVTTrackerInterface } from "./interfaces/OAVTTrackerInterface";
+import { OAVTAction } from "./models/OAVTAction";
+import { OAVTEvent } from "./models/OAVTEvent";
 
 /**
  * An OpenAVT Instrument.
@@ -21,7 +23,6 @@ export class OAVTInstrument {
      * @param metricalc (optional) An object conforming to OAVTMetricalcInterface.
      */
     constructor(hub: OAVTHubInterface, backend: OAVTBackendInterface, metricalc: OAVTMetricalcInterface = null) {
-        console.log("Created a new OAVTInstrument instance")
         this.setHub(hub)
         this.setMetricalc(metricalc)
         this.setBackend(backend)
@@ -185,5 +186,39 @@ export class OAVTInstrument {
         if (this.backend != null) {
             this.backend.endOfService()
         }
+    }
+
+    /**
+     * Emit an event.
+     * 
+     * It generates an `OAVTEvent` using the specified action and emits it using the specified tracker.
+     * 
+     * @param action Action.
+     * @param trackerId Tracker ID.
+     */
+    emit(action: OAVTAction, trackerId: number) {
+        let tracker = this.getTracker(trackerId)
+        if (tracker != null) {
+            let event = this.generateEvent(action, tracker)
+            let trackerEvent = tracker.initEvent(event)
+            if (trackerEvent != null) {
+                let hubEvent = this.hub.processEvent(trackerEvent, tracker)
+                if (hubEvent != null) {
+                    if (this.metricalc != null) {
+                        //TODO: process metrics
+                    }
+                    this.backend.sendEvent(hubEvent)
+
+                    //TODO: update time since
+                }
+            }
+        }
+    }
+
+    // Private methods
+
+    private generateEvent(action: OAVTAction, tracker: OAVTTrackerInterface): OAVTEvent {
+        //TODO: fill attributes
+        return new OAVTEvent(action)
     }
 }
