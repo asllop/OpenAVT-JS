@@ -35,7 +35,7 @@ export class OAVTInstrument {
      */
     setHub(hub: OAVTHubInterface) {
         if (this.hub != null) {
-            hub.endOfService()
+            this.hub.endOfService()
         }
         this.hub = hub
     }
@@ -47,7 +47,7 @@ export class OAVTInstrument {
      */
     setMetricalc(metricalc: OAVTMetricalcInterface) {
         if (this.metricalc != null) {
-            metricalc.endOfService()
+            this.metricalc.endOfService()
         }
         this.metricalc = metricalc
     }
@@ -59,7 +59,7 @@ export class OAVTInstrument {
      */
     setBackend(backend: OAVTBackendInterface) {
         if (this.backend != null) {
-            backend.endOfService()
+            this.backend.endOfService()
         }
         this.backend = backend
     }
@@ -197,6 +197,8 @@ export class OAVTInstrument {
      * @param trackerId Tracker ID.
      */
     emit(action: OAVTAction, trackerId: number) {
+        if (this.backend == null || this.hub == null) return
+
         let tracker = this.getTracker(trackerId)
         if (tracker != null) {
             let event = this.generateEvent(action, tracker)
