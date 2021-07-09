@@ -211,7 +211,10 @@ export class OAVTInstrument {
                 let hubEvent = this.hub.processEvent(trackerEvent, tracker)
                 if (hubEvent != null) {
                     if (this.metricalc != null) {
-                        //TODO: process metrics
+                        let metrics = this.metricalc.processMetric(hubEvent, tracker)
+                        for (let metric of metrics) {
+                            this.backend.sendMetric(metric)
+                        }
                     }
                     this.backend.sendEvent(hubEvent)
 
