@@ -56,7 +56,7 @@ export class OAVTEvent extends OAVTSample {
      */
     removeAttribute(key: OAVTAttribute): boolean {
         if (this.attributes[key.getAttributeName()] != null) {
-            this.attributes[key.getAttributeName()] = null
+            delete this.attributes[key.getAttributeName()]
             return true
         }
         else {
