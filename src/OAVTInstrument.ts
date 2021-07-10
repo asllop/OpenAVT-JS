@@ -206,9 +206,7 @@ export class OAVTInstrument {
      * @param tracker Tracker.
      */
     emit(action: OAVTAction, tracker: OAVTTrackerInterface) {
-        if (this.backend == null || this.hub == null) return
-        
-        if (tracker != null) {
+        if (tracker != null && this.backend != null && this.hub != null) {
             let event = this.generateEvent(action, tracker)
             let trackerEvent = tracker.initEvent(event)
             if (trackerEvent != null) {
