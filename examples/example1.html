@@ -18,7 +18,7 @@
                 if (this.instrument == null) {
                     this.instrument = instrument
                     console.log("Fake Tracker instrumentReady", instrument)
-                    instrument.registerGetter(new OpenAVT.OAVTAttribute("attrName"), this.attrGetter, this)
+                    instrument.registerGetter(new OpenAVT.OAVTAttribute("attrName"), this.attrGetter.bind(this), this)
                 }
             },
             initEvent: function(ev) {
@@ -28,7 +28,8 @@
                 return ev
             },
             attrGetter: function() {
-                return "attrValue"
+                console.log(this)
+                return "attrValue from tracker " + this.trackerId
             }
         }
 
