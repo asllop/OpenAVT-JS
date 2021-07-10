@@ -17,6 +17,7 @@ export class OAVTInstrument {
     private metricalc : OAVTMetricalcInterface = null
     private backend : OAVTBackendInterface = null
     private timeSince : {[key: string]: number} = {}
+    private trackerGetters: {[key: number]: {[key: string]: any}} = {}
 
     /**
      * OAVTInstrument constructor.
@@ -139,7 +140,8 @@ export class OAVTInstrument {
             let tracker = this.getTracker(trackerId)
             if (tracker != null) {
                 tracker.endOfService()
-                //TODO: remove tracker getters
+                // Remove tracker getters
+                delete this.trackerGetters[trackerId]
             }
             delete this.trackers[trackerId]
             return true
@@ -179,7 +181,8 @@ export class OAVTInstrument {
         Object.keys(this.trackers).forEach(trackerId => {
             let tracker = this.trackers[trackerId]
             tracker.endOfService()
-            //TODO: remove tracker getters
+            // Remove tracker getters
+            delete this.trackerGetters[trackerId]
         })
         if (this.hub != null) {
             this.hub.endOfService()
@@ -222,6 +225,68 @@ export class OAVTInstrument {
                     this.timeSince[event.getAction().getTimeAttribute().getAttributeName()] = new Date().getTime()
                 }
             }
+        }
+    }
+
+    /**
+     * Register an attribute getter function.
+     * 
+     * @param attribute Attribute.
+     * @param getter Getter function.
+     * @param tracker Tracker.
+     */
+    registerGetter(attribute: OAVTAttribute, getter: {(): any}, tracker: OAVTTrackerInterface) {
+        if (tracker.trackerId != null) {
+            if (this.trackerGetters[tracker.trackerId] == null) {
+                this.trackerGetters[tracker.trackerId] = {}
+            }
+            this.trackerGetters[tracker.trackerId][attribute.getAttributeName()] = getter
+        }
+    }
+
+    /**
+     * Unregister an attribute getter function.
+     * 
+     * @param attribute Attribute.
+     * @param tracker Tracker.
+     */
+    unregisterGetter(attribute: OAVTAttribute, tracker: OAVTTrackerInterface) {
+        if (tracker.trackerId != null) {
+            if (this.trackerGetters[tracker.trackerId] != null) {
+                delete this.trackerGetters[tracker.trackerId][attribute.getAttributeName()]
+            }
+        }
+    }
+
+    /**
+     * Call an attribute getter.
+     * 
+     * @param attribute Attribute.
+     * @param tracker Tracker.
+     * @returns Getter result.
+     */
+    callGetter(attribute: OAVTAttribute, tracker: OAVTTrackerInterface): any {
+        if (tracker.trackerId != null) {
+            if (this.trackerGetters[tracker.trackerId] != null) {
+                if (this.trackerGetters[tracker.trackerId][attribute.getAttributeName()] != null) {
+                    return this.trackerGetters[tracker.trackerId][attribute.getAttributeName()]()
+                }
+            }
+        }
+        return null
+    }
+
+    /**
+     * Call an attribute getter and put the resulting attribute into an event.
+     * 
+     * @param attribute Attribute.
+     * @param event Event.
+     * @param tracker Tracker.
+     */
+    useGetter(attribute: OAVTAttribute, event: OAVTEvent, tracker: OAVTTrackerInterface) {
+        let val = this.callGetter(attribute, tracker)
+        if (val != null) {
+            event.setAttribute(attribute, val)
         }
     }
 

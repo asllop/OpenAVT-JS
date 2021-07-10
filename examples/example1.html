@@ -8,17 +8,27 @@
         console.log("Hello Example1");
 
         let fakeTracker = {
+            instrument: null,
             trackerId: null,
             state: new OpenAVT.OAVTState(),
             endOfService: function() {
                 console.log("Fake Tracker enfOfService")
             },
             instrumentReady: function(instrument) {
-                console.log("Fake Tracker instrumentReady", instrument)
+                if (this.instrument == null) {
+                    this.instrument = instrument
+                    console.log("Fake Tracker instrumentReady", instrument)
+                    instrument.registerGetter(new OpenAVT.OAVTAttribute("attrName"), this.attrGetter, this)
+                }
             },
             initEvent: function(ev) {
                 console.log("Fake Tracker initEvent", ev)
+                console.log("CALL GETTER = " + this.instrument.callGetter(new OpenAVT.OAVTAttribute("attrName"), this))
+                this.instrument.useGetter(new OpenAVT.OAVTAttribute("attrName"), ev, this)
                 return ev
+            },
+            attrGetter: function() {
+                return "attrValue"
             }
         }
 
