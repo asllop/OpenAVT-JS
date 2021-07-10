@@ -64,9 +64,7 @@
         let trackerId = instrument.addTracker(fakeTracker);
         instrument.ready()
 
-        console.log(instrument.getTrackers()[trackerId]);
-
-        instrument.emit(OpenAVT.OAVTAction.Ping, trackerId)
+        instrument.emit(OpenAVT.OAVTAction.Ping, instrument.getTracker(trackerId))
     </script>
 </body>
 </html>

@@ -195,18 +195,19 @@ export class OAVTInstrument {
         }
     }
 
+    //TODO: ping stuff
+
     /**
      * Emit an event.
      * 
      * It generates an `OAVTEvent` using the specified action and emits it using the specified tracker.
      * 
      * @param action Action.
-     * @param trackerId Tracker ID.
+     * @param tracker Tracker.
      */
-    emit(action: OAVTAction, trackerId: number) {
+    emit(action: OAVTAction, tracker: OAVTTrackerInterface) {
         if (this.backend == null || this.hub == null) return
-
-        let tracker = this.getTracker(trackerId)
+        
         if (tracker != null) {
             let event = this.generateEvent(action, tracker)
             let trackerEvent = tracker.initEvent(event)
