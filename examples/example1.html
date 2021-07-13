@@ -5,7 +5,8 @@
 </head>
 <body>
     <script>
-        console.log("Hello Example1");
+        OpenAVT.OAVTLog.setLogLevel(OpenAVT.LogLevel.Verbose)
+        OpenAVT.OAVTLog.verbose("Hello Example1");
 
         let fakeTracker = {
             instrument: null,
