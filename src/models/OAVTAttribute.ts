@@ -22,6 +22,15 @@ export class OAVTAttribute {
         return this.attributeName
     }
 
+    /**
+     * Get string value of object.
+     * 
+     * @returns String representation of object.
+     */
+    toString(): string {
+        return this.attributeName
+    }
+
     /** Tracker Target attribute. The target of the tracker (i.e.: AVPlayer, IMA, ...). */
     static readonly trackerTarget = new OAVTAttribute("trackerTarget")
     /** Stream Id attribute. Identificator of the stream being played. */

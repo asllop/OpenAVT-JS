@@ -5,19 +5,20 @@ import { OAVTTrackerInterface } from "./interfaces/OAVTTrackerInterface";
 import { OAVTAction } from "./models/OAVTAction";
 import { OAVTAttribute } from "./models/OAVTAttribute";
 import { OAVTEvent } from "./models/OAVTEvent";
+import { OAVTMap } from "./utils/OAVTMap";
 
 /**
  * An OpenAVT Instrument.
  */
 export class OAVTInstrument {
     private instrumentId : string
-    private trackers : {[key: number]: OAVTTrackerInterface} = {}
+    private trackers : OAVTMap<number, OAVTTrackerInterface> = new OAVTMap()
     private nextTrackerId : number = 0
     private hub : OAVTHubInterface = null
     private metricalc : OAVTMetricalcInterface = null
     private backend : OAVTBackendInterface = null
-    private timeSince : {[key: string]: number} = {}
-    private trackerGetters: {[key: number]: {[key: string]: any}} = {}
+    private timeSince : OAVTMap<OAVTAttribute, number> = new OAVTMap()
+    private trackerGetters: OAVTMap<number, OAVTMap<OAVTAttribute, any>> = new OAVTMap()
 
     /**
      * OAVTInstrument constructor.
@@ -79,7 +80,7 @@ export class OAVTInstrument {
         let trackerId = this.nextTrackerId
         this.nextTrackerId++
         tracker.trackerId = trackerId
-        this.trackers[trackerId] = tracker
+        this.trackers.set(trackerId, tracker)
         return trackerId
     }
 
@@ -88,8 +89,8 @@ export class OAVTInstrument {
      *
      * @return Dictionary of trackers, using tracker ID as a key.
      */
-    getTrackers(): {[key: number]: OAVTTrackerInterface} {
-        return this.trackers
+    getTrackers(): {[key: string]: OAVTTrackerInterface} {
+        return this.trackers.dic()
     }
 
     /**
@@ -99,7 +100,7 @@ export class OAVTInstrument {
      * @returns Tracker instance.
      */
     getTracker(trackerId: number): OAVTTrackerInterface {
-        return this.trackers[trackerId]
+        return this.trackers.get(trackerId)
     }
 
     /**
@@ -136,14 +137,14 @@ export class OAVTInstrument {
      * @returns True if removed, False otherwise.
      */
     removeTracker(trackerId: number): boolean {
-        if (this.trackers[trackerId] != null) {
+        if (this.trackers.get(trackerId) != null) {
             let tracker = this.getTracker(trackerId)
             if (tracker != null) {
                 tracker.endOfService()
                 // Remove tracker getters
-                delete this.trackerGetters[trackerId]
+                this.trackerGetters.del(trackerId)
             }
-            delete this.trackers[trackerId]
+            this.trackers.del(trackerId)
             return true
         }
         else {
@@ -166,8 +167,7 @@ export class OAVTInstrument {
         if (this.hub != null) {
             this.hub.instrumentReady(this)
         }
-        Object.keys(this.trackers).forEach(key => {
-            let tracker = this.trackers[key]
+        this.trackers.iter((_, tracker) => {
             tracker.instrumentReady(this)
         })
     }
@@ -178,11 +178,10 @@ export class OAVTInstrument {
      * It calls the `endOfService` method of all chain components (trackers, hub, metricalc and backend).
      */
     shutdown() {
-        Object.keys(this.trackers).forEach(trackerId => {
-            let tracker = this.trackers[trackerId]
+        this.trackers.iter((trackerId, tracker) => {
             tracker.endOfService()
             // Remove tracker getters
-            delete this.trackerGetters[trackerId]
+            this.trackerGetters.del(trackerId)
         })
         if (this.hub != null) {
             this.hub.endOfService()
@@ -221,7 +220,7 @@ export class OAVTInstrument {
                     this.backend.sendEvent(hubEvent)
 
                     // Update time since
-                    this.timeSince[event.getAction().getTimeAttribute().getAttributeName()] = new Date().getTime()
+                    this.timeSince.set(event.getAction().getTimeAttribute(), new Date().getTime())
                 }
             }
         }
@@ -236,10 +235,10 @@ export class OAVTInstrument {
      */
     registerGetter(attribute: OAVTAttribute, getter: {(): any}, tracker: OAVTTrackerInterface) {
         if (tracker.trackerId != null) {
-            if (this.trackerGetters[tracker.trackerId] == null) {
-                this.trackerGetters[tracker.trackerId] = {}
+            if (this.trackerGetters.get(tracker.trackerId) == null) {
+                this.trackerGetters.set(tracker.trackerId, new OAVTMap())
             }
-            this.trackerGetters[tracker.trackerId][attribute.getAttributeName()] = getter
+            this.trackerGetters.get(tracker.trackerId).set(attribute, getter)
         }
     }
 
@@ -251,8 +250,8 @@ export class OAVTInstrument {
      */
     unregisterGetter(attribute: OAVTAttribute, tracker: OAVTTrackerInterface) {
         if (tracker.trackerId != null) {
-            if (this.trackerGetters[tracker.trackerId] != null) {
-                delete this.trackerGetters[tracker.trackerId][attribute.getAttributeName()]
+            if (this.trackerGetters.get(tracker.trackerId) != null) {
+                this.trackerGetters.get(tracker.trackerId).del(attribute)
             }
         }
     }
@@ -266,9 +265,9 @@ export class OAVTInstrument {
      */
     callGetter(attribute: OAVTAttribute, tracker: OAVTTrackerInterface): any {
         if (tracker.trackerId != null) {
-            if (this.trackerGetters[tracker.trackerId] != null) {
-                if (this.trackerGetters[tracker.trackerId][attribute.getAttributeName()] != null) {
-                    return this.trackerGetters[tracker.trackerId][attribute.getAttributeName()]()
+            if (this.trackerGetters.get(tracker.trackerId) != null) {
+                if (this.trackerGetters.get(tracker.trackerId).get(attribute) != null) {
+                    return this.trackerGetters.get(tracker.trackerId).get(attribute)()
                 }
             }
         }
@@ -306,10 +305,9 @@ export class OAVTInstrument {
     }
     
     private generateTimeSince(event: OAVTEvent) {
-        Object.keys(this.timeSince).forEach(attributeName => {
-            let timestamp = this.timeSince[attributeName]
+        this.timeSince.iter((attribute, timestamp) => {
             let timeSince = new Date().getTime() - timestamp
-            event.setAttribute(new OAVTAttribute(attributeName), timeSince)
+            event.setAttribute(attribute, timeSince)
         })
     }
 }
