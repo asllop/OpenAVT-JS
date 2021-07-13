@@ -1,13 +1,14 @@
 import { OAVTAction } from "./OAVTAction";
 import { OAVTAttribute } from "./OAVTAttribute";
 import { OAVTSample } from "./OAVTSample";
+import { OAVTMap } from "../utils/OAVTMap";
 
 /**
  * An OpenAVT Event.
  */
 export class OAVTEvent extends OAVTSample {
     private action: OAVTAction
-    private attributes: {[key: string]: any} = {}
+    private attributes: OAVTMap<OAVTAttribute, any> = new OAVTMap()
 
     /**
      * OAVTEvent constructor.
@@ -35,7 +36,7 @@ export class OAVTEvent extends OAVTSample {
      * @returns Attribute value.
      */
     getAttibute(attribute: OAVTAttribute): any {
-        return this.attributes[attribute.getAttributeName()]
+        return this.attributes.get(attribute)
     }
 
     /**
@@ -45,7 +46,7 @@ export class OAVTEvent extends OAVTSample {
      * @param value Value.
      */
     setAttribute(key: OAVTAttribute, value: any) {
-        this.attributes[key.getAttributeName()] = value
+        this.attributes.set(key, value)
     }
 
     /**
@@ -55,8 +56,8 @@ export class OAVTEvent extends OAVTSample {
      * @returns Boolean, true if attribute removed, false otherwise.
      */
     removeAttribute(key: OAVTAttribute): boolean {
-        if (this.attributes[key.getAttributeName()] != null) {
-            delete this.attributes[key.getAttributeName()]
+        if (this.attributes.get(key) != null) {
+            this.attributes.del(key)
             return true
         }
         else {
@@ -70,6 +71,6 @@ export class OAVTEvent extends OAVTSample {
      * @returns Attributes.
      */
     getDictionary(): {[key: string]: any} {
-        return this.attributes
+        return this.attributes.dic()
     }
 }
