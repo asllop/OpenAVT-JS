@@ -18,7 +18,7 @@ export class OAVTInstrument {
     private metricalc : OAVTMetricalcInterface = null
     private backend : OAVTBackendInterface = null
     private timeSince : OAVTMap<OAVTAttribute, number> = new OAVTMap()
-    private trackerGetters: OAVTMap<number, OAVTMap<OAVTAttribute, any>> = new OAVTMap()
+    private trackerGetters: OAVTMap<number, OAVTMap<OAVTAttribute, {(): any}>> = new OAVTMap()
 
     /**
      * OAVTInstrument constructor.
