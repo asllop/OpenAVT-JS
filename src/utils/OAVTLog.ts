@@ -20,9 +20,21 @@ export enum LogLevel {
 export class OAVTLog {
     private static logLevel = LogLevel.Warning
 
-    private static log(msg: string, cutLevel: LogLevel) {
+    private static log(cutLevel: LogLevel, ...msg: any) {
         if (this.logLevel <= cutLevel) {
-            console.log(new Date() + " OAVTLog" + msg)
+            let logfoo = console.log
+            switch (cutLevel) {
+                case LogLevel.Debug:
+                    logfoo = console.debug
+                    break
+                case LogLevel.Warning:
+                    logfoo = console.warn
+                    break
+                case LogLevel.Error:
+                    logfoo = console.error
+                    break
+            }
+            logfoo(new Date() + " OAVTLog", ...msg)
         }
     }
 
@@ -31,8 +43,8 @@ export class OAVTLog {
      * 
      * @param msg Log message.
      */
-    public static verbose(msg: string) {
-        this.log("[VERBOSE] " + msg, LogLevel.Verbose)
+    public static verbose(...msg: any) {
+        this.log(LogLevel.Verbose, "[VERBOSE]", ...msg)
     }
 
     /**
@@ -40,8 +52,8 @@ export class OAVTLog {
      * 
      * @param msg Log message.
      */
-     public static debug(msg: string) {
-        this.log("[DEBUG] " + msg, LogLevel.Debug)
+     public static debug(...msg: any) {
+        this.log(LogLevel.Debug, "[DEBUG]", ...msg)
     }
 
     /**
@@ -49,8 +61,8 @@ export class OAVTLog {
      * 
      * @param msg Log message.
      */
-     public static warning(msg: string) {
-        this.log("[WARNING] " + msg, LogLevel.Warning)
+     public static warning(...msg: any) {
+        this.log(LogLevel.Warning, "[WARNING]", ...msg)
     }
 
     /**
@@ -58,8 +70,8 @@ export class OAVTLog {
      * 
      * @param msg Log message.
      */
-     public static error(msg: string) {
-        this.log("[ERROR] " + msg, LogLevel.Error)
+     public static error(...msg: any) {
+        this.log(LogLevel.Error, "[ERROR]", ...msg)
     }
 
     /**

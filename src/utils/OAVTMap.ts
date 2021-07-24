@@ -1,5 +1,5 @@
 /**
- * OpenAVT mapm class.
+ * OpenAVT map class.
  */
 export class OAVTMap<K, V> {
     private _values: {[key: string]: V} = {}
