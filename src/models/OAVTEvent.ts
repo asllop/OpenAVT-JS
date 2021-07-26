@@ -35,7 +35,7 @@ export class OAVTEvent extends OAVTSample {
      * @param attribute Attribute.
      * @returns Attribute value.
      */
-    getAttibute(attribute: OAVTAttribute): any {
+    getAttribute(attribute: OAVTAttribute): any {
         return this.attributes.get(attribute)
     }
 

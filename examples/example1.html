@@ -5,7 +5,7 @@
 </head>
 <body>
     <script>
-        OpenAVT.OAVTLog.setLogLevel(OpenAVT.LogLevel.Verbose)
+        OpenAVT.OAVTLog.setLogLevel(OpenAVT.LogLevel.Debug)
         OpenAVT.OAVTLog.verbose("Hello Example1");
 
         let fakeTracker = {
@@ -13,60 +13,70 @@
             trackerId: null,
             state: new OpenAVT.OAVTState(),
             endOfService: function() {
-                console.log("Fake Tracker enfOfService")
+                OpenAVT.OAVTLog.verbose("Fake Tracker enfOfService")
             },
             instrumentReady: function(instrument) {
                 if (this.instrument == null) {
                     this.instrument = instrument
-                    console.log("Fake Tracker instrumentReady", instrument)
+                    OpenAVT.OAVTLog.verbose("Fake Tracker instrumentReady", instrument)
                     instrument.registerGetter(new OpenAVT.OAVTAttribute("attrName"), this.attrGetter.bind(this), this)
                 }
             },
             initEvent: function(ev) {
-                console.log("Fake Tracker initEvent", ev)
-                console.log("CALL GETTER = " + this.instrument.callGetter(new OpenAVT.OAVTAttribute("attrName"), this))
+                OpenAVT.OAVTLog.verbose("Fake Tracker initEvent", ev)
+                OpenAVT.OAVTLog.verbose("CALL GETTER = " + this.instrument.callGetter(new OpenAVT.OAVTAttribute("attrName"), this))
                 this.instrument.useGetter(new OpenAVT.OAVTAttribute("attrName"), ev, this)
                 return ev
             },
             attrGetter: function() {
-                console.log("Called attrGetter", this)
+                OpenAVT.OAVTLog.verbose("Called attrGetter", this)
                 return "attrValue from tracker " + this.trackerId
-            }
-        }
-
-        let fakeHub = {
-            endOfService: function() {
-                console.log("Fake Hub enfOfService")
-            },
-            instrumentReady: function(instrument) {
-                console.log("Fake Hub instrumentReady", instrument)
-            },
-            processEvent: function(ev, tracker) {
-                console.log("Fake Hub processEvent", ev, tracker)
-                return ev
             }
         }
         
         let fakeBackend = {
             endOfService: function() {
-                console.log("Fake Backend enfOfService")
+                OpenAVT.OAVTLog.verbose("Fake Backend enfOfService")
             },
             instrumentReady: function(instrument) {
-                console.log("Fake Backend instrumentReady", instrument)
+                OpenAVT.OAVTLog.verbose("Fake Backend instrumentReady", instrument)
             },
             sendEvent: function(ev) {
-                console.log("Fake Backend sendEvent", ev)
+                OpenAVT.OAVTLog.verbose("Fake Backend sendEvent", ev)
+                OpenAVT.OAVTLog.debug("Fake Backend sendEvent ->", ev.action.actionName, ev.getDictionary(), ev)
             },
             sendMetric: function(mt) {
-                console.log("Fake Backend sendMetric", mt)
+                OpenAVT.OAVTLog.verbose("Fake Backend sendMetric", mt)
             }
         }
         
-        let instrument = new OpenAVT.OAVTInstrument(fakeHub, fakeBackend);
+        let instrument = new OpenAVT.OAVTInstrument(new OpenAVT.OAVTHubCore(), fakeBackend);
         let trackerId = instrument.addTracker(fakeTracker);
         instrument.ready()
 
-        instrument.emit(OpenAVT.OAVTAction.Ping, instrument.getTracker(trackerId))
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        console.log("----------------------------")
+
+        async function playerSimulation() {
+            instrument.emit(OpenAVT.OAVTAction.MediaRequest, instrument.getTracker(trackerId))
+            await sleep(100);
+            instrument.emit(OpenAVT.OAVTAction.BufferBegin, instrument.getTracker(trackerId))
+            await sleep(1500);
+            instrument.emit(OpenAVT.OAVTAction.BufferFinish, instrument.getTracker(trackerId))
+            await sleep(50);
+            instrument.emit(OpenAVT.OAVTAction.Start, instrument.getTracker(trackerId))
+            await sleep(1000);
+            instrument.emit(OpenAVT.OAVTAction.PauseBegin, instrument.getTracker(trackerId))
+            await sleep(2000);
+            instrument.emit(OpenAVT.OAVTAction.PauseFinish, instrument.getTracker(trackerId))
+            await sleep(3000);
+            instrument.emit(OpenAVT.OAVTAction.End, instrument.getTracker(trackerId))
+        }
+
+        playerSimulation()
     </script>
 </body>
 </html>
