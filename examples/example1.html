@@ -19,17 +19,16 @@
                 if (this.instrument == null) {
                     this.instrument = instrument
                     OpenAVT.OAVTLog.verbose("Fake Tracker instrumentReady", instrument)
-                    instrument.registerGetter(new OpenAVT.OAVTAttribute("attrName"), this.attrGetter.bind(this), this)
+                    instrument.registerGetter(new OpenAVT.OAVTAttribute("attrName"), this.getAttrName.bind(this), this)
                 }
             },
             initEvent: function(ev) {
                 OpenAVT.OAVTLog.verbose("Fake Tracker initEvent", ev)
                 OpenAVT.OAVTLog.verbose("CALL GETTER = " + this.instrument.callGetter(new OpenAVT.OAVTAttribute("attrName"), this))
-                this.instrument.useGetter(new OpenAVT.OAVTAttribute("attrName"), ev, this)
                 return ev
             },
-            attrGetter: function() {
-                OpenAVT.OAVTLog.verbose("Called attrGetter", this)
+            getAttrName: function() {
+                OpenAVT.OAVTLog.verbose("Called getAttrName", this)
                 return "attrValue from tracker " + this.trackerId
             }
         }
@@ -58,9 +57,8 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        console.log("----------------------------")
-
         async function playerSimulation() {
+            console.log("----------------------------")
             instrument.emit(OpenAVT.OAVTAction.MediaRequest, instrument.getTracker(trackerId))
             await sleep(100);
             instrument.emit(OpenAVT.OAVTAction.BufferBegin, instrument.getTracker(trackerId))
@@ -74,6 +72,7 @@
             instrument.emit(OpenAVT.OAVTAction.PauseFinish, instrument.getTracker(trackerId))
             await sleep(3000);
             instrument.emit(OpenAVT.OAVTAction.End, instrument.getTracker(trackerId))
+            console.log("----------------------------")
         }
 
         playerSimulation()

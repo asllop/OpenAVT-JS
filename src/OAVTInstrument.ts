@@ -18,7 +18,7 @@ export class OAVTInstrument {
     private metricalc : OAVTMetricalcInterface = null
     private backend : OAVTBackendInterface = null
     private timeSince : OAVTMap<OAVTAttribute, number> = new OAVTMap()
-    private trackerGetters: OAVTMap<number, OAVTMap<OAVTAttribute, {(): any}>> = new OAVTMap()
+    private trackerGetters: OAVTMap<number, OAVTMap<OAVTAttribute, [{(): any}, {(ev: OAVTEvent, attr: OAVTAttribute): boolean}]>> = new OAVTMap()
 
     /**
      * OAVTInstrument constructor.
@@ -232,13 +232,14 @@ export class OAVTInstrument {
      * @param attribute Attribute.
      * @param getter Getter function.
      * @param tracker Tracker.
+     * @param filter Code block. If it returns true the attribute will be automatically added to the event. If false, it will be ignored.
      */
-    registerGetter(attribute: OAVTAttribute, getter: {(): any}, tracker: OAVTTrackerInterface) {
+    registerGetter(attribute: OAVTAttribute, getter: {(): any}, tracker: OAVTTrackerInterface, filter: {(ev: OAVTEvent, attr: OAVTAttribute): boolean} = () => { return true }) {
         if (tracker.trackerId != null) {
             if (this.trackerGetters.get(tracker.trackerId) == null) {
                 this.trackerGetters.set(tracker.trackerId, new OAVTMap())
             }
-            this.trackerGetters.get(tracker.trackerId).set(attribute, getter)
+            this.trackerGetters.get(tracker.trackerId).set(attribute, [getter, filter])
         }
     }
 
@@ -267,7 +268,7 @@ export class OAVTInstrument {
         if (tracker.trackerId != null) {
             if (this.trackerGetters.get(tracker.trackerId) != null) {
                 if (this.trackerGetters.get(tracker.trackerId).get(attribute) != null) {
-                    return this.trackerGetters.get(tracker.trackerId).get(attribute)()
+                    return this.trackerGetters.get(tracker.trackerId).get(attribute)[0]()
                 }
             }
         }
@@ -282,9 +283,17 @@ export class OAVTInstrument {
      * @param tracker Tracker.
      */
     useGetter(attribute: OAVTAttribute, event: OAVTEvent, tracker: OAVTTrackerInterface) {
-        let val = this.callGetter(attribute, tracker)
-        if (val != null) {
-            event.setAttribute(attribute, val)
+        if (tracker.trackerId != null) {
+            if (this.trackerGetters.get(tracker.trackerId) != null) {
+                if (this.trackerGetters.get(tracker.trackerId).get(attribute) != null) {
+                    if (this.trackerGetters.get(tracker.trackerId).get(attribute)[1](event, attribute)) {
+                        let val = this.trackerGetters.get(tracker.trackerId).get(attribute)[0]()
+                        if (val != null) {
+                            event.setAttribute(attribute, val)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -296,6 +305,7 @@ export class OAVTInstrument {
         // Generate attributes
         this.generateSenderId(tracker, event)
         this.generateTimeSince(event)
+        this.generateAttributesFromGetters(tracker, event)
         
         return event
     }
@@ -309,5 +319,16 @@ export class OAVTInstrument {
             let timeSince = new Date().getTime() - timestamp
             event.setAttribute(attribute, timeSince)
         })
+    }
+
+    private generateAttributesFromGetters(tracker: OAVTTrackerInterface, event: OAVTEvent) {
+        if (tracker.trackerId != null) {
+            if (this.trackerGetters.get(tracker.trackerId) != null) {
+                let d = this.trackerGetters.get(tracker.trackerId)
+                d.iter((attr, _) => {
+                    this.useGetter(attr, event, tracker)
+                })
+            }
+        }
     }
 }
