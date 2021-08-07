@@ -1,0 +1,33 @@
+{
+  "name": "openavt-jwplayer-js",
+  "version": "0.1.0",
+  "description": "OpenAVT tracker for JWPlayer.",
+  "main": "./dist/umd/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/typings/index.d.ts",
+  "scripts": {
+    "clean+build": "npm run clean && npm run build",
+    "clean+build:dev": "npm run clean && npm run build:dev",
+    "build": "tsc && webpack --mode production",
+    "build:dev": "tsc && webpack --mode development",
+    "clean": "rm -rf dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "npm run clean+build:dev",
+    "start": "python -m SimpleHTTPServer 8000"
+  },
+  "author": "asllop",
+  "license": "MIT",
+  "dependencies": {
+    "openavt-core-js": "file:../OpenAVT-Core"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.2.2",
+    "typescript": "^4.3.5",
+    "webpack": "^5.43.0",
+    "webpack-cli": "^4.7.2"
+  },
+  "files": [
+    "/dist/esm",
+    "/dist/typings"
+  ]
+}

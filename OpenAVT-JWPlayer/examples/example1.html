@@ -1,0 +1,56 @@
+<html>
+<head>
+    <!-- OpenAVT -->
+    <script src="/dist/umd/openavt-jwplayer.js"></script>
+</head>
+<body>
+    <script>
+        OpenAVT.OAVTLog.setLogLevel(OpenAVT.LogLevel.Verbose)
+        OpenAVT.OAVTLog.verbose("Hello Example1 of JWPlayer Tracker");
+        
+        let fakeBackend = {
+            endOfService: function() {
+                OpenAVT.OAVTLog.verbose("Fake Backend enfOfService")
+            },
+            instrumentReady: function(instrument) {
+                OpenAVT.OAVTLog.verbose("Fake Backend instrumentReady", instrument)
+            },
+            sendEvent: function(ev) {
+                OpenAVT.OAVTLog.verbose("Fake Backend sendEvent", ev)
+                OpenAVT.OAVTLog.debug("Fake Backend sendEvent ->", ev.action.actionName, ev.getDictionary(), ev)
+            },
+            sendMetric: function(mt) {
+                OpenAVT.OAVTLog.verbose("Fake Backend sendMetric", mt)
+            }
+        }
+        
+        let instrument = new OpenAVT.OAVTInstrument(new OpenAVT.OAVTHubCore(), fakeBackend);
+        let trackerId = instrument.addTracker(new OpenAVT.OAVTTrackerJWPlayer());
+        instrument.ready()
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function playerSimulation() {
+            console.log("----------------------------")
+            instrument.emit(OpenAVT.OAVTAction.MediaRequest, instrument.getTracker(trackerId))
+            await sleep(100);
+            instrument.emit(OpenAVT.OAVTAction.BufferBegin, instrument.getTracker(trackerId))
+            await sleep(1500);
+            instrument.emit(OpenAVT.OAVTAction.BufferFinish, instrument.getTracker(trackerId))
+            await sleep(50);
+            instrument.emit(OpenAVT.OAVTAction.Start, instrument.getTracker(trackerId))
+            await sleep(1000);
+            instrument.emit(OpenAVT.OAVTAction.PauseBegin, instrument.getTracker(trackerId))
+            await sleep(2000);
+            instrument.emit(OpenAVT.OAVTAction.PauseFinish, instrument.getTracker(trackerId))
+            await sleep(3000);
+            instrument.emit(OpenAVT.OAVTAction.End, instrument.getTracker(trackerId))
+            console.log("----------------------------")
+        }
+
+        playerSimulation()
+    </script>
+</body>
+</html>
