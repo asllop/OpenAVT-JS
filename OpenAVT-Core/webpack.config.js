@@ -7,7 +7,7 @@ module.exports = (env, argv) => {
     },
     output: {
       path: path.resolve(__dirname, "./dist/umd"), // builds to ./dist/umd/
-      filename: "openavt.js", // index.js
+      filename: "openavt-core.js", // index.js
       library: "OpenAVT", // aka window.myLibrary
       libraryTarget: "umd", // supports commonjs, amd and web browsers
       globalObject: "this"

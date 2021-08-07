@@ -1,5 +1,5 @@
 {
-  "name": "openavt-js",
+  "name": "openavt-core-js",
   "version": "0.1.0",
   "description": "OpenAVT for Javascript-based platforms like web browsers, smart TVs, chromecast and similar.",
   "main": "./dist/umd/index.js",
