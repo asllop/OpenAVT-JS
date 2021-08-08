@@ -2,12 +2,26 @@
 <head>
     <!-- OpenAVT -->
     <script src="/dist/umd/openavt-jwplayer.js"></script>
+    <!-- JWPlayer v8.21.2 -->
+    <script src="https://cdn.jwplayer.com/libraries/PACloPvR.js"></script>
 </head>
 <body>
+    <div id="videoPlayer"></div>
+
     <script>
         OpenAVT.OAVTLog.setLogLevel(OpenAVT.LogLevel.Verbose)
         OpenAVT.OAVTLog.verbose("Hello Example1 of JWPlayer Tracker");
-        
+
+        let player = jwplayer("videoPlayer").setup({
+            playlist: [{
+                title: "Parkour DASH",
+                file: "https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd"
+            },       {
+                title: "Airshow Live HSL",
+                file: "http://cdn3.viblast.com/streams/hls/airshow/playlist.m3u8"
+            }]
+        });
+
         let fakeBackend = {
             endOfService: function() {
                 OpenAVT.OAVTLog.verbose("Fake Backend enfOfService")
@@ -16,8 +30,7 @@
                 OpenAVT.OAVTLog.verbose("Fake Backend instrumentReady", instrument)
             },
             sendEvent: function(ev) {
-                OpenAVT.OAVTLog.verbose("Fake Backend sendEvent", ev)
-                OpenAVT.OAVTLog.debug("Fake Backend sendEvent ->", ev.action.actionName, ev.getDictionary(), ev)
+                OpenAVT.OAVTLog.verbose("Fake Backend sendEvent ->", ev.action.actionName, ev.getDictionary(), ev)
             },
             sendMetric: function(mt) {
                 OpenAVT.OAVTLog.verbose("Fake Backend sendMetric", mt)
@@ -25,32 +38,9 @@
         }
         
         let instrument = new OpenAVT.OAVTInstrument(new OpenAVT.OAVTHubCore(), fakeBackend);
-        let trackerId = instrument.addTracker(new OpenAVT.OAVTTrackerJWPlayer());
+        let trackerId = instrument.addTracker(new OpenAVT.OAVTTrackerJWPlayer(player));
         instrument.ready()
 
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
-        async function playerSimulation() {
-            console.log("----------------------------")
-            instrument.emit(OpenAVT.OAVTAction.MediaRequest, instrument.getTracker(trackerId))
-            await sleep(100);
-            instrument.emit(OpenAVT.OAVTAction.BufferBegin, instrument.getTracker(trackerId))
-            await sleep(1500);
-            instrument.emit(OpenAVT.OAVTAction.BufferFinish, instrument.getTracker(trackerId))
-            await sleep(50);
-            instrument.emit(OpenAVT.OAVTAction.Start, instrument.getTracker(trackerId))
-            await sleep(1000);
-            instrument.emit(OpenAVT.OAVTAction.PauseBegin, instrument.getTracker(trackerId))
-            await sleep(2000);
-            instrument.emit(OpenAVT.OAVTAction.PauseFinish, instrument.getTracker(trackerId))
-            await sleep(3000);
-            instrument.emit(OpenAVT.OAVTAction.End, instrument.getTracker(trackerId))
-            console.log("----------------------------")
-        }
-
-        playerSimulation()
     </script>
 </body>
 </html>
