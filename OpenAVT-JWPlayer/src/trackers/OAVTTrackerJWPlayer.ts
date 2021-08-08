@@ -76,125 +76,127 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
         this.player.on('visualQuality', this.visualQualityListener.bind(this))
         this.player.on('error', this.errorListener.bind(this))
         this.player.on('setupError', this.setupErrorListener.bind(this))
-      }
+    }
+
+    /**
+     * Unregister JWPlayer event listeners.
+     */
+    unregisterListeners () {
+        this.player.off('ready', this.readyListener)
+        this.player.off('playlist', this.playlistListener)
+        this.player.off('playlistItem', this.playlistItemListener)
+        this.player.off('viewable', this.viewableListener)
+        this.player.off('beforePlay', this.beforePlayListener)
+        this.player.off('firstFrame', this.firstFrameListener)
+        this.player.off('idle', this.idleListener)
+        this.player.off('playbackRateChanged', this.playbackRateChangedListener)
+        this.player.off('nextClick', this.nextClickListener)
+        this.player.off('play', this.playListener)
+        this.player.off('pause', this.pauseListener)
+        this.player.off('buffer', this.bufferListener)
+        this.player.off('seek', this.seekListener)
+        this.player.off('seeked', this.seekedListener)
+        this.player.off('complete', this.completeListener)
+        this.player.off('beforeComplete', this.beforeCompleteListener)
+        this.player.off('playlistComplete', this.playlistCompleteListener)
+        this.player.off('visualQuality', this.visualQualityListener)
+        this.player.off('error', this.errorListener)
+        this.player.off('setupError', this.setupErrorListener)
+    }
     
-      /**
-       * Unregister JWPlayer event listeners.
-       */
-      unregisterListeners () {
-          this.player.off('ready', this.readyListener)
-          this.player.off('playlist', this.playlistListener)
-          this.player.off('playlistItem', this.playlistItemListener)
-          this.player.off('viewable', this.viewableListener)
-          this.player.off('beforePlay', this.beforePlayListener)
-          this.player.off('firstFrame', this.firstFrameListener)
-          this.player.off('idle', this.idleListener)
-          this.player.off('playbackRateChanged', this.playbackRateChangedListener)
-          this.player.off('nextClick', this.nextClickListener)
-          this.player.off('play', this.playListener)
-          this.player.off('pause', this.pauseListener)
-          this.player.off('buffer', this.bufferListener)
-          this.player.off('seek', this.seekListener)
-          this.player.off('seeked', this.seekedListener)
-          this.player.off('complete', this.completeListener)
-          this.player.off('beforeComplete', this.beforeCompleteListener)
-          this.player.off('playlistComplete', this.playlistCompleteListener)
-          this.player.off('visualQuality', this.visualQualityListener)
-          this.player.off('error', this.errorListener)
-          this.player.off('setupError', this.setupErrorListener)
-      }
-      
-      readyListener() {
+    readyListener() {
         OAVTLog.verbose("JWPlayer event = ready")
-      }
+    }
 
-      playlistListener() {
+    playlistListener() {
         OAVTLog.verbose("JWPlayer event = playlist")
-      }
+    }
 
-      playlistItemListener() {
+    playlistItemListener() {
         OAVTLog.verbose("JWPlayer event = playlistItem")
-      }
+    }
 
-      viewableListener() {
+    viewableListener() {
         OAVTLog.verbose("JWPlayer event = viewable")
-      }
+    }
 
-      beforePlayListener() {
+    beforePlayListener() {
         OAVTLog.verbose("JWPlayer event = beforePlay")
         this.instrument.emit(OAVTAction.StreamLoad, this)
-      }
+    }
 
-      firstFrameListener() {
+    firstFrameListener() {
         OAVTLog.verbose("JWPlayer event = firstFrame")
         this.instrument.emit(OAVTAction.Start, this)
-      }
+    }
 
-      idleListener() {
+    idleListener() {
         OAVTLog.verbose("JWPlayer event = idle")
         // New stream will start, end current and reset states for the next
         this.instrument.emit(OAVTAction.End, this)
         this.state.reset()
-      }
+    }
 
-      playbackRateChangedListener() {
+    playbackRateChangedListener() {
         OAVTLog.verbose("JWPlayer event = playbackRateChanged")
-      }
+    }
 
-      nextClickListener() {
+    nextClickListener() {
         OAVTLog.verbose("JWPlayer event = nextClick")
-      }
+    }
 
-      playListener() {
+    playListener() {
         OAVTLog.verbose("JWPlayer event = play")
         this.instrument.emit(OAVTAction.BufferFinish, this)
         this.instrument.emit(OAVTAction.PauseFinish, this)
-      }
+    }
 
-      pauseListener() {
+    pauseListener() {
         OAVTLog.verbose("JWPlayer event = pause")
         this.instrument.emit(OAVTAction.PauseBegin, this)
-      }
+    }
 
-      bufferListener() {
+    bufferListener() {
         OAVTLog.verbose("JWPlayer event = buffer")
         this.instrument.emit(OAVTAction.BufferBegin, this)
-      }
+    }
 
-      seekListener() {
+    seekListener() {
         OAVTLog.verbose("JWPlayer event = seek")
         this.instrument.emit(OAVTAction.SeekBegin, this)
-      }
+    }
 
-      seekedListener() {
+    seekedListener() {
         OAVTLog.verbose("JWPlayer event = seeked")
         this.instrument.emit(OAVTAction.SeekFinish, this)
-      }
+    }
 
-      completeListener() {
+    completeListener() {
         OAVTLog.verbose("JWPlayer event = complete")
-      }
+    }
 
-      beforeCompleteListener() {
+    beforeCompleteListener() {
         OAVTLog.verbose("JWPlayer event = beforeComplete")
-      }
+    }
 
-      playlistCompleteListener() {
+    playlistCompleteListener() {
         OAVTLog.verbose("JWPlayer event = playlistComplete")
-      }
+    }
 
-      visualQualityListener() {
+    visualQualityListener() {
         OAVTLog.verbose("JWPlayer event = visualQuality")
         //TODO: quality changes
-      }
+    }
 
-      errorListener() {
+    errorListener() {
         OAVTLog.verbose("JWPlayer event = error")
         //TODO: errors
-      }
+    }
 
-      setupErrorListener() {
+    setupErrorListener() {
         OAVTLog.verbose("JWPlayer event = setupError")
         //TODO: setup errors
-      }
+    }
+
+    //TODO: attribute getters
 }
