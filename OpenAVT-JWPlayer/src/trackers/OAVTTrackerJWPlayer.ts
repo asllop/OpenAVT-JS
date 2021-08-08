@@ -1,4 +1,4 @@
-import { OAVTEvent, OAVTInstrument, OAVTLog, OAVTState, OAVTTrackerInterface } from 'openavt-core'
+import { OAVTAction, OAVTEvent, OAVTInstrument, OAVTLog, OAVTState, OAVTTrackerInterface } from 'openavt-core'
 
 /**
  * OpenAVT JWPlayer tracker.
@@ -13,13 +13,13 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
      * 
      * @param player JWPlayer instance.
      */
-    constructor(player: Object) {
-        OAVTLog.verbose("Construct JWPlayer Tracker = ", player)
-        this.player = player
+    constructor(player: Object = null) {
+        if (player != null) {
+            this.setPlayer(player)
+        }
     }
 
     initEvent(event: OAVTEvent): OAVTEvent {
-        OAVTLog.verbose("JWPlayer Tracker received event = ", event)
         return event
     }
     
@@ -27,18 +27,34 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
     state: OAVTState = new OAVTState();
 
     instrumentReady(instrument: OAVTInstrument): void {
-        OAVTLog.verbose("JWPlayer Tracker instrumentReady")
         if (this.instrument == null) {
             this.instrument = instrument
-            this.registerListeners()
+            //TODO: register getters
+            this.instrument.emit(OAVTAction.TrackerInit, this)
         }
     }
 
     endOfService(): void {
-        OAVTLog.verbose("JWPlayer Tracker endOfService")
         this.unregisterListeners()
     }
 
+    /**
+     * Set player.
+     * 
+     * @param player JWPlayer instance.
+     */
+    setPlayer(player: Object) {
+        if (this.player != null) {
+            this.unregisterListeners()
+        }
+        this.player = player
+        this.instrument?.emit(OAVTAction.PlayerSet, this)
+        this.registerListeners()
+    }
+
+    /**
+     * Register JWPlayer event listeners.
+     */
     registerListeners () {
         this.player.on('ready', this.readyListener.bind(this))
         this.player.on('playlist', this.playlistListener.bind(this))
@@ -62,6 +78,9 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
         this.player.on('setupError', this.setupErrorListener.bind(this))
       }
     
+      /**
+       * Unregister JWPlayer event listeners.
+       */
       unregisterListeners () {
           this.player.off('ready', this.readyListener)
           this.player.off('playlist', this.playlistListener)
