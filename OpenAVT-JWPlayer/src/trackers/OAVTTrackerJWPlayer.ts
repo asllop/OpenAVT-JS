@@ -1,4 +1,4 @@
-import { OAVTEvent, OAVTInstrument, OAVTLog, OAVTState, OAVTTrackerInterface } from 'openavt-core-js'
+import { OAVTEvent, OAVTInstrument, OAVTLog, OAVTState, OAVTTrackerInterface } from 'openavt-core'
 
 export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
     initEvent(event: OAVTEvent): OAVTEvent {

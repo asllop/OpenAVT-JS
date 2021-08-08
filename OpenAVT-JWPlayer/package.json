@@ -1,5 +1,5 @@
 {
-  "name": "openavt-jwplayer-js",
+  "name": "openavt-jwplayer",
   "version": "0.1.0",
   "description": "OpenAVT tracker for JWPlayer.",
   "main": "./dist/umd/index.js",
@@ -18,7 +18,7 @@
   "author": "asllop",
   "license": "MIT",
   "dependencies": {
-    "openavt-core-js": "file:../OpenAVT-Core"
+    "openavt-core": "file:../OpenAVT-Core"
   },
   "devDependencies": {
     "babel-loader": "^8.2.2",
