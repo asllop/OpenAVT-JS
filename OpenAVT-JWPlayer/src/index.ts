@@ -1,6 +1,6 @@
 export { OAVTTrackerJWPlayer } from './trackers/OAVTTrackerJWPlayer'
-import { OAVTTrackerJWPlayer as Tracker } from './trackers/OAVTTrackerJWPlayer'
+import { OAVTTrackerJWPlayer } from './trackers/OAVTTrackerJWPlayer'
 import * as OpenAVT from 'openavt-core'
 
-OpenAVT["OAVTTrackerJWPlayer"] = Tracker
+OpenAVT["OAVTTrackerJWPlayer"] = OAVTTrackerJWPlayer
 module.exports = OpenAVT
