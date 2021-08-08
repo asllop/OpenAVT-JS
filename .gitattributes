@@ -1,2 +1,2 @@
 webpack.config.js linguist-vendored
-examples/* linguist-vendored
+**/examples/* linguist-vendored
