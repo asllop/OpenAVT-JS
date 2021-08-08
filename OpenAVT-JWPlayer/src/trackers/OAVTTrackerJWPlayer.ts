@@ -122,14 +122,19 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
       beforePlayListener() {
         OAVTLog.verbose("JWPlayer event = beforePlay")
+        this.instrument.emit(OAVTAction.StreamLoad, this)
       }
 
       firstFrameListener() {
         OAVTLog.verbose("JWPlayer event = firstFrame")
+        this.instrument.emit(OAVTAction.Start, this)
       }
 
       idleListener() {
         OAVTLog.verbose("JWPlayer event = idle")
+        // New stream will start, end current and reset states for the next
+        this.instrument.emit(OAVTAction.End, this)
+        this.state.reset()
       }
 
       playbackRateChangedListener() {
@@ -142,22 +147,28 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
       playListener() {
         OAVTLog.verbose("JWPlayer event = play")
+        this.instrument.emit(OAVTAction.BufferFinish, this)
+        this.instrument.emit(OAVTAction.PauseFinish, this)
       }
 
       pauseListener() {
         OAVTLog.verbose("JWPlayer event = pause")
+        this.instrument.emit(OAVTAction.PauseBegin, this)
       }
 
       bufferListener() {
         OAVTLog.verbose("JWPlayer event = buffer")
+        this.instrument.emit(OAVTAction.BufferBegin, this)
       }
 
       seekListener() {
         OAVTLog.verbose("JWPlayer event = seek")
+        this.instrument.emit(OAVTAction.SeekBegin, this)
       }
 
       seekedListener() {
         OAVTLog.verbose("JWPlayer event = seeked")
+        this.instrument.emit(OAVTAction.SeekFinish, this)
       }
 
       completeListener() {
@@ -174,13 +185,16 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
       visualQualityListener() {
         OAVTLog.verbose("JWPlayer event = visualQuality")
+        //TODO: quality changes
       }
 
       errorListener() {
         OAVTLog.verbose("JWPlayer event = error")
+        //TODO: errors
       }
 
       setupErrorListener() {
         OAVTLog.verbose("JWPlayer event = setupError")
+        //TODO: setup errors
       }
 }

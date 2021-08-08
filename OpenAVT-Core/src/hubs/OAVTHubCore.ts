@@ -168,6 +168,7 @@ export class OAVTHubCore implements OAVTHubInterface {
                 else {
                     return false
                 }
+                break
             case OAVTAction.SeekBegin.getActionName():
                 if (!tracker.state.isSeeking) {
                     tracker.state.isSeeking = true
