@@ -1,4 +1,4 @@
-import { OAVTAction, OAVTEvent, OAVTInstrument, OAVTLog, OAVTState, OAVTTrackerInterface } from 'openavt-core'
+import { OAVTAction, OAVTEvent, OAVTAttribute, OAVTInstrument, OAVTLog, OAVTState, OAVTTrackerInterface } from 'openavt-core'
 
 /**
  * OpenAVT JWPlayer tracker.
@@ -29,7 +29,7 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
     instrumentReady(instrument: OAVTInstrument): void {
         if (this.instrument == null) {
             this.instrument = instrument
-            //TODO: register getters
+            this.registerGetters()
             this.instrument.emit(OAVTAction.TrackerInit, this)
         }
     }
@@ -50,6 +50,26 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
         this.player = player
         this.instrument?.emit(OAVTAction.PlayerSet, this)
         this.registerListeners()
+    }
+
+    /**
+     * Register attribute getters.
+     */
+    registerGetters() {
+        this.instrument.registerGetter(OAVTAttribute.trackerTarget, this.getTrackerTarget, this)
+        this.instrument.registerGetter(OAVTAttribute.title, this.getTitle, this)
+        this.instrument.registerGetter(OAVTAttribute.position, this.getPosition, this)
+        this.instrument.registerGetter(OAVTAttribute.duration, this.getDuration, this)
+        this.instrument.registerGetter(OAVTAttribute.resolutionHeight, this.getResolutionHeight, this)
+        this.instrument.registerGetter(OAVTAttribute.resolutionWidth, this.getResolutionWidth, this)
+        this.instrument.registerGetter(OAVTAttribute.isMuted, this.getIsMuted, this)
+        this.instrument.registerGetter(OAVTAttribute.volume, this.getVolume, this)
+        this.instrument.registerGetter(OAVTAttribute.fps, this.getFps, this)
+        this.instrument.registerGetter(OAVTAttribute.source, this.getSource, this)
+        this.instrument.registerGetter(OAVTAttribute.bitrate, this.getBitrate, this)
+        this.instrument.registerGetter(OAVTAttribute.language, this.getLanguage, this)
+        this.instrument.registerGetter(OAVTAttribute.subtitles, this.getSubtitles, this)
+        this.instrument.registerGetter(OAVTAttribute.isAdsTracker, this.getIsAdsTracker, this)
     }
 
     /**
@@ -103,6 +123,8 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
         this.player.off('error', this.errorListener)
         this.player.off('setupError', this.setupErrorListener)
     }
+
+    // Event listeners
     
     readyListener() {
         OAVTLog.verbose("JWPlayer event = ready")
@@ -198,5 +220,73 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
         //TODO: setup errors
     }
 
-    //TODO: attribute getters
+    // Attribute getters
+
+    getTrackerTarget() {
+        return "JWPlayer"
+    }
+
+    getTitle() {
+        //TODO
+        return null
+    }
+
+    getPosition() {
+        //TODO
+        return null
+    }
+
+    getDuration() {
+        //TODO
+        return null
+    }
+
+    getResolutionHeight() {
+        //TODO
+        return null
+    }
+
+    getResolutionWidth() {
+        //TODO
+        return null
+    }
+
+    getIsMuted() {
+        //TODO
+        return false
+    }
+
+    getVolume() {
+        //TODO
+        return null
+    }
+
+    getFps() {
+        //TODO
+        return null
+    }
+
+    getSource() {
+        //TODO
+        return null
+    }
+
+    getBitrate() {
+        //TODO
+        return null
+    }
+
+    getLanguage() {
+        //TODO
+        return null
+    }
+
+    getSubtitles() {
+        //TODO
+        return null
+    }
+
+    getIsAdsTracker() {
+        return false
+    }
 }
