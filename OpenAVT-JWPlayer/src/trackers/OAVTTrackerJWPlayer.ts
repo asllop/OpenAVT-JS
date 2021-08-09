@@ -7,6 +7,8 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
     private player: any = null
     private instrument: OAVTInstrument = null
+    private lastResolutionHeight = 0
+    private lastResolutionWidth = 0
 
     /**
      * Build an OpenAVT JWPlayer tracker.
@@ -150,6 +152,8 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
     firstFrameListener() {
         OAVTLog.verbose("JWPlayer event = firstFrame")
         this.instrument.emit(OAVTAction.Start, this)
+        this.lastResolutionHeight = this.getResolutionHeight()
+        this.lastResolutionWidth = this.getResolutionWidth()
     }
 
     idleListener() {
@@ -207,7 +211,7 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
     visualQualityListener() {
         OAVTLog.verbose("JWPlayer event = visualQuality")
-        //TODO: quality changes
+        this.checkResolutionChange()
     }
 
     errorListener() {
@@ -271,5 +275,28 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
     getIsAdsTracker() {
         return false
+    }
+
+    private checkResolutionChange() {
+        let currH = this.getResolutionHeight()
+        let currW = this.getResolutionWidth()
+        if (this.lastResolutionWidth == 0 || this.lastResolutionHeight == 0) {
+            this.lastResolutionHeight = currH
+            this.lastResolutionWidth = currW
+        }
+        else {
+            let lastMul = this.lastResolutionHeight * this.lastResolutionWidth
+            let currMul = currH * currW
+            
+            if (lastMul > currMul) {
+                this.instrument?.emit(OAVTAction.QualityChangeDown, this)
+            }
+            else if (lastMul < currMul) {
+                this.instrument?.emit(OAVTAction.QualityChangeUp, this)
+            }
+            
+            this.lastResolutionHeight = currH
+            this.lastResolutionWidth = currW
+        }
     }
 }
