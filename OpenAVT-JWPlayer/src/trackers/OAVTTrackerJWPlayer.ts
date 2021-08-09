@@ -9,6 +9,7 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
     private instrument: OAVTInstrument = null
     private lastResolutionHeight = 0
     private lastResolutionWidth = 0
+    private lastErr: any = null
 
     /**
      * Build an OpenAVT JWPlayer tracker.
@@ -22,6 +23,11 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
     }
 
     initEvent(event: OAVTEvent): OAVTEvent {
+        if (event.getAction().getActionName() == OAVTAction.Error.getActionName()) {
+            event.setAttribute(OAVTAttribute.errorDescription, this.lastErr.message)
+            event.setAttribute(OAVTAttribute.errorCode, this.lastErr.code)
+            event.setAttribute(OAVTAttribute.errorType, this.lastErr.type)
+        }
         return event
     }
     
@@ -217,14 +223,16 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
         this.checkResolutionChange()
     }
 
-    errorListener() {
+    errorListener(err: any) {
         OAVTLog.verbose("JWPlayer event = error")
-        //TODO: errors
+        this.lastErr = err
+        this.instrument.emit(OAVTAction.Error, this)
     }
 
-    setupErrorListener() {
+    setupErrorListener(err: any) {
         OAVTLog.verbose("JWPlayer event = setupError")
-        //TODO: setup errors
+        this.lastErr = err
+        this.instrument.emit(OAVTAction.Error, this)
     }
 
     // Attribute getters
