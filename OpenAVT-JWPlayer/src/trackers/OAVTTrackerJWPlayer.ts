@@ -158,9 +158,8 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
     idleListener() {
         OAVTLog.verbose("JWPlayer event = idle")
-        // New stream will start, end current and reset states for the next
+        // New stream will start, end current
         this.instrument.emit(OAVTAction.End, this)
-        this.state.reset()
     }
 
     playbackRateChangedListener() {
@@ -199,6 +198,7 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
     completeListener() {
         OAVTLog.verbose("JWPlayer event = complete")
+        this.instrument.emit(OAVTAction.End, this)
     }
 
     beforeCompleteListener() {
