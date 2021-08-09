@@ -56,20 +56,20 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
      * Register attribute getters.
      */
     registerGetters() {
-        this.instrument.registerGetter(OAVTAttribute.trackerTarget, this.getTrackerTarget, this)
-        this.instrument.registerGetter(OAVTAttribute.title, this.getTitle, this)
-        this.instrument.registerGetter(OAVTAttribute.position, this.getPosition, this)
-        this.instrument.registerGetter(OAVTAttribute.duration, this.getDuration, this)
-        this.instrument.registerGetter(OAVTAttribute.resolutionHeight, this.getResolutionHeight, this)
-        this.instrument.registerGetter(OAVTAttribute.resolutionWidth, this.getResolutionWidth, this)
-        this.instrument.registerGetter(OAVTAttribute.isMuted, this.getIsMuted, this)
-        this.instrument.registerGetter(OAVTAttribute.volume, this.getVolume, this)
-        this.instrument.registerGetter(OAVTAttribute.fps, this.getFps, this)
-        this.instrument.registerGetter(OAVTAttribute.source, this.getSource, this)
-        this.instrument.registerGetter(OAVTAttribute.bitrate, this.getBitrate, this)
-        this.instrument.registerGetter(OAVTAttribute.language, this.getLanguage, this)
-        this.instrument.registerGetter(OAVTAttribute.subtitles, this.getSubtitles, this)
-        this.instrument.registerGetter(OAVTAttribute.isAdsTracker, this.getIsAdsTracker, this)
+        this.instrument.registerGetter(OAVTAttribute.trackerTarget, this.getTrackerTarget.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.title, this.getTitle.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.position, this.getPosition.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.duration, this.getDuration.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.resolutionHeight, this.getResolutionHeight.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.resolutionWidth, this.getResolutionWidth.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.isMuted, this.getIsMuted.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.volume, this.getVolume.bind(this), this)
+        //this.instrument.registerGetter(OAVTAttribute.fps, this.getFps.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.source, this.getSource.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.bitrate, this.getBitrate.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.language, this.getLanguage.bind(this), this)
+        //this.instrument.registerGetter(OAVTAttribute.subtitles, this.getSubtitles.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.isAdsTracker, this.getIsAdsTracker.bind(this), this)
     }
 
     /**
@@ -227,63 +227,46 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
     }
 
     getTitle() {
-        //TODO
-        return null
+        return this.player?.getPlaylistItem()?.title
     }
 
     getPosition() {
-        //TODO
-        return null
+        return Math.floor(this.player?.getPosition() * 1000)
     }
 
     getDuration() {
-        //TODO
-        return null
+        return Math.floor(this.player?.getDuration() * 1000)
     }
 
     getResolutionHeight() {
-        //TODO
-        return null
+        return this.player?.getVisualQuality()?.level?.height
     }
 
     getResolutionWidth() {
-        //TODO
-        return null
+        return this.player?.getVisualQuality()?.level?.width
     }
 
     getIsMuted() {
-        //TODO
-        return false
+        return this.player?.getMute()
     }
 
     getVolume() {
-        //TODO
-        return null
-    }
-
-    getFps() {
-        //TODO
-        return null
+        return this.player?.getVolume()
     }
 
     getSource() {
-        //TODO
-        return null
+        return this.player?.getPlaylistItem()?.file
     }
 
     getBitrate() {
-        //TODO
-        return null
+        return this.player?.getVisualQuality()?.level?.bitrate
     }
 
     getLanguage() {
-        //TODO
-        return null
-    }
-
-    getSubtitles() {
-        //TODO
-        return null
+        let i = this.player?.getCurrentAudioTrack()
+        if (i >= 0) {
+          return this.player?.getAudioTracks()[i]?.language
+        }
     }
 
     getIsAdsTracker() {
