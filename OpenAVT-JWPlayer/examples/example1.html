@@ -13,7 +13,15 @@
         OpenAVT.OAVTLog.verbose("Hello Example1 of JWPlayer Tracker");
 
         let player = jwplayer("videoPlayer").setup({
-            playlist: [{
+            playlist: [/*{
+                title: "yyyyyy",
+                file: "http://docs.evostream.com/sample_content/assets/hls-bunny-rangerequest/playlist.m3u8"
+            },*/
+            {
+                title: "Kite DASH",
+                file: "https://demos.transloadit.com/dashtest/my_playlist.mpd"
+            },
+            {
                 title: "Parkour DASH",
                 file: "https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd"
             },
