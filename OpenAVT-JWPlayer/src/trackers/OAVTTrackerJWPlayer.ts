@@ -158,7 +158,8 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
     idleListener() {
         OAVTLog.verbose("JWPlayer event = idle")
-        // New stream will start, end current
+        this.instrument.emit(OAVTAction.BufferFinish, this)
+        this.instrument.emit(OAVTAction.PauseFinish, this)
         this.instrument.emit(OAVTAction.End, this)
     }
 
@@ -198,6 +199,8 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
     completeListener() {
         OAVTLog.verbose("JWPlayer event = complete")
+        this.instrument.emit(OAVTAction.BufferFinish, this)
+        this.instrument.emit(OAVTAction.PauseFinish, this)
         this.instrument.emit(OAVTAction.End, this)
     }
 
@@ -255,7 +258,7 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
     }
 
     getVolume() {
-        return this.player?.getVolume()
+        return Math.floor(this.player?.getVolume())
     }
 
     getSource() {
