@@ -187,7 +187,9 @@ export class OAVTHubCore implements OAVTHubInterface {
                     return false
                 }
                 break
-            case OAVTAction.End.getActionName(), OAVTAction.Stop.getActionName(), OAVTAction.Next.getActionName():
+            case OAVTAction.End.getActionName():
+            case OAVTAction.Stop.getActionName():
+            case OAVTAction.Next.getActionName():
                 if (tracker.state.didStart && !tracker.state.didFinish) {
                     //TODO
                     //this.instrument.stopPing(tracker.trackerId)
