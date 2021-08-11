@@ -15,7 +15,7 @@ export class OAVTHubCore implements OAVTHubInterface {
     private streamId : string = null
     private playbackId : string = null
     private timestampOfLastEventOnPlayback : number = 0
-    private instrument: OAVTInstrument = null
+    protected instrument: OAVTInstrument = null
 
     processEvent(event: OAVTEvent, tracker: OAVTTrackerInterface): OAVTEvent {
         // In case of playing again the same stream after it finished
