@@ -83,8 +83,7 @@ export class OAVTHubCore implements OAVTHubInterface {
      * @param tracker Tracker instance.
      */
     startPing(tracker: OAVTTrackerInterface) {
-        //TODO: start ping
-        //this.instrument.startPing(tracker.trackerId, 30.0)
+        this.instrument.startPing(tracker.trackerId, 30000)
     }
 
     /**
@@ -191,8 +190,7 @@ export class OAVTHubCore implements OAVTHubInterface {
             case OAVTAction.Stop.getActionName():
             case OAVTAction.Next.getActionName():
                 if (tracker.state.didStart && !tracker.state.didFinish) {
-                    //TODO
-                    //this.instrument.stopPing(tracker.trackerId)
+                    this.instrument.stopPing(tracker.trackerId)
                     tracker.state.didFinish = true
                 }
                 else {

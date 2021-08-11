@@ -19,6 +19,7 @@ export class OAVTInstrument {
     private backend : OAVTBackendInterface = null
     private timeSince : OAVTMap<OAVTAttribute, number> = new OAVTMap()
     private trackerGetters: OAVTMap<number, OAVTMap<OAVTAttribute, [{(): any}, {(ev: OAVTEvent, attr: OAVTAttribute): boolean}]>> = new OAVTMap()
+    private pingTrackerTimers : OAVTMap<number, any> = new OAVTMap()
 
     /**
      * OAVTInstrument constructor.
@@ -194,7 +195,31 @@ export class OAVTInstrument {
         }
     }
 
-    //TODO: ping stuff
+    /**
+     * Start ping time interval.
+     * 
+     * @param trackerId Tracker ID.
+     * @param interval Ping time interval
+     */
+    public startPing(trackerId: number, interval: number) {
+        this.stopPing(trackerId)
+        let intervalId = setInterval( function(instrument: any, trackerId: any) {
+            instrument.emit(OAVTAction.Ping, instrument.getTracker(trackerId))
+        }, interval, this, trackerId)
+        this.pingTrackerTimers.set(trackerId, intervalId)
+    }
+
+    /**
+     * Stop pings.
+     * 
+     * @param trackerId Tracker ID.
+     */
+    public stopPing(trackerId: number) {
+        let intervalId = this.pingTrackerTimers.get(trackerId)
+        if (intervalId != null) {
+            clearInterval(intervalId)
+        }
+    }
 
     /**
      * Emit an event.
