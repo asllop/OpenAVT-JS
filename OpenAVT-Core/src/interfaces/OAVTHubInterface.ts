@@ -1,6 +1,6 @@
-import { OAVTEvent } from "../models/OAVTEvent";
-import { OAVTComponentInterface } from "./OAVTComponentInterface";
-import { OAVTTrackerInterface } from "./OAVTTrackerInterface";
+import { OAVTEvent } from "../models/OAVTEvent"
+import { OAVTComponentInterface } from "./OAVTComponentInterface"
+import { OAVTTrackerInterface } from "./OAVTTrackerInterface"
 
 /**
  * OpenAVT interface for instrument hub components.

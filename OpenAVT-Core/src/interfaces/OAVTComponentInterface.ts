@@ -1,4 +1,4 @@
-import { OAVTInstrument } from "../OAVTInstrument";
+import { OAVTInstrument } from "../OAVTInstrument"
 
 /**
  * OpenAVT base interface for instrument components.

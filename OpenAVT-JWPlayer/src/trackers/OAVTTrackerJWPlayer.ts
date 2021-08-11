@@ -31,8 +31,8 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
         return event
     }
     
-    trackerId: number;
-    state: OAVTState = new OAVTState();
+    trackerId: number
+    state: OAVTState = new OAVTState()
 
     instrumentReady(instrument: OAVTInstrument): void {
         if (this.instrument == null) {

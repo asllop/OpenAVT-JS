@@ -1,7 +1,7 @@
-import { OAVTEvent } from "../models/OAVTEvent";
-import { OAVTMetric } from "../models/OAVTMetric";
-import { OAVTComponentInterface } from "./OAVTComponentInterface";
-import { OAVTTrackerInterface } from "./OAVTTrackerInterface";
+import { OAVTEvent } from "../models/OAVTEvent"
+import { OAVTMetric } from "../models/OAVTMetric"
+import { OAVTComponentInterface } from "./OAVTComponentInterface"
+import { OAVTTrackerInterface } from "./OAVTTrackerInterface"
 
 /**
  * OpenAVT interface for instrument metricalc components.

@@ -1,6 +1,6 @@
-import { OAVTEvent } from "../models/OAVTEvent";
-import { OAVTState } from "../models/OAVTState";
-import { OAVTComponentInterface } from "./OAVTComponentInterface";
+import { OAVTEvent } from "../models/OAVTEvent"
+import { OAVTState } from "../models/OAVTState"
+import { OAVTComponentInterface } from "./OAVTComponentInterface"
 
 /**
  * OpenAVT interface for instrument tracker components.
@@ -12,7 +12,7 @@ import { OAVTComponentInterface } from "./OAVTComponentInterface";
      * @param event Event received.
      * @return Event or null.
      */
-    initEvent(event: OAVTEvent): OAVTEvent;
+    initEvent(event: OAVTEvent): OAVTEvent
     /**
      * Tracked ID.
      */

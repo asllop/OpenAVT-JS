@@ -1,4 +1,4 @@
-import { OAVTSample } from "./OAVTSample";
+import { OAVTSample } from "./OAVTSample"
 
 /** Metric type */
 export enum MetricType {

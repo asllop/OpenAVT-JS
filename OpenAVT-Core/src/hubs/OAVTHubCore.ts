@@ -1,5 +1,5 @@
-import { OAVTEvent, OAVTTrackerInterface, OAVTInstrument, OAVTAttribute, OAVTAction } from "..";
-import { OAVTHubInterface } from "../interfaces/OAVTHubInterface";
+import { OAVTEvent, OAVTTrackerInterface, OAVTInstrument, OAVTAttribute, OAVTAction } from ".."
+import { OAVTHubInterface } from "../interfaces/OAVTHubInterface"
 
 /**
  * OpenAVT hub for generic content players.

@@ -1,11 +1,11 @@
-import { OAVTBackendInterface } from "./interfaces/OAVTBackendInterface";
-import { OAVTHubInterface } from "./interfaces/OAVTHubInterface";
-import { OAVTMetricalcInterface } from "./interfaces/OAVTMetricalcInterface";
-import { OAVTTrackerInterface } from "./interfaces/OAVTTrackerInterface";
-import { OAVTAction } from "./models/OAVTAction";
-import { OAVTAttribute } from "./models/OAVTAttribute";
-import { OAVTEvent } from "./models/OAVTEvent";
-import { OAVTMap } from "./utils/OAVTMap";
+import { OAVTBackendInterface } from "./interfaces/OAVTBackendInterface"
+import { OAVTHubInterface } from "./interfaces/OAVTHubInterface"
+import { OAVTMetricalcInterface } from "./interfaces/OAVTMetricalcInterface"
+import { OAVTTrackerInterface } from "./interfaces/OAVTTrackerInterface"
+import { OAVTAction } from "./models/OAVTAction"
+import { OAVTAttribute } from "./models/OAVTAttribute"
+import { OAVTEvent } from "./models/OAVTEvent"
+import { OAVTMap } from "./utils/OAVTMap"
 
 /**
  * An OpenAVT Instrument.

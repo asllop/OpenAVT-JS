@@ -1,6 +1,6 @@
-import { OAVTAction, OAVTAttribute, OAVTEvent, OAVTInstrument } from "..";
-import { OAVTTrackerInterface } from "..";
-import { OAVTHubCore } from "./OAVTHubCore";
+import { OAVTAction, OAVTAttribute, OAVTEvent, OAVTInstrument } from ".."
+import { OAVTTrackerInterface } from ".."
+import { OAVTHubCore } from "./OAVTHubCore"
 
 /**
  * OpenAVT hub for generic content players with ads.

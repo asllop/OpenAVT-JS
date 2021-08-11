@@ -1,7 +1,7 @@
-import { OAVTAction } from "./OAVTAction";
-import { OAVTAttribute } from "./OAVTAttribute";
-import { OAVTSample } from "./OAVTSample";
-import { OAVTMap } from "../utils/OAVTMap";
+import { OAVTAction } from "./OAVTAction"
+import { OAVTAttribute } from "./OAVTAttribute"
+import { OAVTSample } from "./OAVTSample"
+import { OAVTMap } from "../utils/OAVTMap"
 
 /**
  * An OpenAVT Event.
