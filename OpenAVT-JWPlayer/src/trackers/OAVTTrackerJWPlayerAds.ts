@@ -7,6 +7,14 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
 
     private player: any = null
     private instrument: OAVTInstrument = null
+    private lastErr: any = null
+    //private adBreakId: string = null
+    private adRoll: string = null
+    //private adClient: string = null
+    private adId: string = null
+    private adSystem: string = null
+    private adTitle: string = null
+    private adDuration: number = null
 
     /**
      * Build an OpenAVT JWPlayer Ads tracker.
@@ -20,6 +28,11 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
     }
 
     initEvent(event: OAVTEvent): OAVTEvent {
+        if (event.getAction().getActionName() == OAVTAction.AdError.getActionName()) {
+            event.setAttribute(OAVTAttribute.errorDescription, this.lastErr.message)
+            event.setAttribute(OAVTAttribute.errorCode, this.lastErr.code)
+            event.setAttribute(OAVTAttribute.errorType, this.lastErr.type)
+        }
         return event
     }
     
@@ -57,12 +70,18 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
      */
     registerGetters() {
         this.instrument.registerGetter(OAVTAttribute.trackerTarget, this.getTrackerTarget.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.adId, this.getAdId.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.adRoll, this.getAdRoll.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.adSystem, this.getAdSystem.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.adTitle, this.getAdTitle.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.adDuration, this.getAdDuration.bind(this), this)
     }
 
     /**
      * Register JWPlayer event listeners.
      */
     registerListeners () {
+        this.player.on('adLoaded', this.adLoadedListener.bind(this))
         this.player.on('adBreakStart', this.adBreakStartListener.bind(this))
         this.player.on('adBreakEnd', this.adBreakEndListener.bind(this))
         this.player.on('adStarted', this.adStartedListener.bind(this))
@@ -78,6 +97,7 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
      * Unregister JWPlayer event listeners.
      */
     unregisterListeners () {
+        this.player.off('adLoaded', this.adLoadedListener)
         this.player.off('adBreakStart', this.adBreakStartListener)
         this.player.off('adBreakEnd', this.adBreakEndListener)
         this.player.off('adStarted', this.adStartedListener)
@@ -91,8 +111,20 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
 
     // Event listeners
 
-    adBreakStartListener() {
-        OAVTLog.verbose("JWPlayer Ads event = adBreakStart")
+    adLoadedListener(ev: any) {
+        OAVTLog.verbose("JWPlayer Ads event = adLoaded", ev)
+        this.adId = ev.adId || ev.id
+        this.adSystem = ev.adsystem
+        this.adTitle = ev.adtitle
+        this.adDuration = ev.duration
+    }
+
+    adBreakStartListener(ev: any) {
+        OAVTLog.verbose("JWPlayer Ads event = adBreakStart", ev)
+        //this.adBreakId = ev.adBreakId
+        this.adRoll = ev.adposition
+        //this.adClient = ev.client
+        this.adId = ev.adId || ev.id
         this.instrument.emit(OAVTAction.AdBreakBegin, this)
     }
 
@@ -111,9 +143,9 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
         this.instrument.emit(OAVTAction.AdFinish, this)
     }
 
-    adErrorListener() {
+    adErrorListener(err: any) {
         OAVTLog.verbose("JWPlayer Ads event = adError")
-        //TODO: add error attributes
+        this.lastErr = err
         this.instrument.emit(OAVTAction.AdError, this)
     }
 
@@ -141,5 +173,25 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
 
     getTrackerTarget() {
         return "JWPlayerAds"
+    }
+
+    getAdId() {
+        return this.adId
+    }
+    
+    getAdRoll() {
+        return this.adRoll
+    }
+    
+    getAdSystem() {
+        this.adSystem
+    }
+
+    getAdTitle() {
+        return this.adTitle
+    }
+    
+    getAdDuration() {
+        return this.adDuration * 1000
     }
 }
