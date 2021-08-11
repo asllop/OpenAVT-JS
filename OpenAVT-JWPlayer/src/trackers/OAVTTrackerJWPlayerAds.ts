@@ -8,13 +8,12 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
     private player: any = null
     private instrument: OAVTInstrument = null
     private lastErr: any = null
-    //private adBreakId: string = null
     private adRoll: string = null
-    //private adClient: string = null
     private adId: string = null
     private adSystem: string = null
     private adTitle: string = null
     private adDuration: number = null
+    private adCreativeId: string = null
 
     /**
      * Build an OpenAVT JWPlayer Ads tracker.
@@ -75,6 +74,7 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
         this.instrument.registerGetter(OAVTAttribute.adSystem, this.getAdSystem.bind(this), this)
         this.instrument.registerGetter(OAVTAttribute.adTitle, this.getAdTitle.bind(this), this)
         this.instrument.registerGetter(OAVTAttribute.adDuration, this.getAdDuration.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.adCreativeId, this.getAdCreativeId.bind(this), this)
     }
 
     /**
@@ -117,13 +117,12 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
         this.adSystem = ev.adsystem
         this.adTitle = ev.adtitle
         this.adDuration = ev.duration
+        this.adCreativeId = ev.ima?.ad?.g?.creativeId
     }
 
     adBreakStartListener(ev: any) {
         OAVTLog.verbose("JWPlayer Ads event = adBreakStart", ev)
-        //this.adBreakId = ev.adBreakId
         this.adRoll = ev.adposition
-        //this.adClient = ev.client
         this.adId = ev.adId || ev.id
         this.instrument.emit(OAVTAction.AdBreakBegin, this)
     }
@@ -193,5 +192,9 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
     
     getAdDuration() {
         return this.adDuration * 1000
+    }
+
+    getAdCreativeId() {
+        return this.adCreativeId
     }
 }
