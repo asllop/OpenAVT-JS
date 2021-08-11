@@ -203,9 +203,9 @@ export class OAVTInstrument {
      */
     public startPing(trackerId: number, interval: number) {
         this.stopPing(trackerId)
-        let intervalId = setInterval( function(instrument: any, trackerId: any) {
-            instrument.emit(OAVTAction.Ping, instrument.getTracker(trackerId))
-        }, interval, this, trackerId)
+        let intervalId = setInterval( function(trackerId: number) {
+            this.emit(OAVTAction.Ping, this.getTracker(trackerId))
+        }.bind(this, trackerId), interval)
         this.pingTrackerTimers.set(trackerId, intervalId)
     }
 
