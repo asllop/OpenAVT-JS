@@ -127,4 +127,6 @@ export class OAVTAttribute {
     static readonly adResolutionWidth = new OAVTAttribute("adResolutionWidth")
     /** Ad System attribute. Ad system. */
     static readonly adSystem = new OAVTAttribute("adSystem")
+    /** Ad Client attribute. Ad provider (ima, freewheel, vast, etc) */
+    static readonly adClient = new OAVTAttribute("adClient")
 }

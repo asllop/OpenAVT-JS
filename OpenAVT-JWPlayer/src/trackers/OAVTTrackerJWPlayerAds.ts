@@ -14,6 +14,7 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
     private adTitle: string = null
     private adDuration: number = null
     private adCreativeId: string = null
+    private adClient: string = null
 
     /**
      * Build an OpenAVT JWPlayer Ads tracker.
@@ -75,6 +76,7 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
         this.instrument.registerGetter(OAVTAttribute.adTitle, this.getAdTitle.bind(this), this)
         this.instrument.registerGetter(OAVTAttribute.adDuration, this.getAdDuration.bind(this), this)
         this.instrument.registerGetter(OAVTAttribute.adCreativeId, this.getAdCreativeId.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.adClient, this.getAdClient.bind(this), this)
     }
 
     /**
@@ -113,17 +115,12 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
 
     adLoadedListener(ev: any) {
         OAVTLog.verbose("JWPlayer Ads event = adLoaded", ev)
-        this.adId = ev.adId || ev.id
-        this.adSystem = ev.adsystem
-        this.adTitle = ev.adtitle
-        this.adDuration = ev.duration
-        this.adCreativeId = ev.ima?.ad?.g?.creativeId
+        this.storeAttributes(ev)
     }
 
     adBreakStartListener(ev: any) {
         OAVTLog.verbose("JWPlayer Ads event = adBreakStart", ev)
-        this.adRoll = ev.adposition
-        this.adId = ev.adId || ev.id
+        this.storeAttributes(ev)
         this.instrument.emit(OAVTAction.AdBreakBegin, this)
     }
 
@@ -155,9 +152,10 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
         this.instrument.emit(OAVTAction.AdPauseBegin, this)
     }
 
-    adPlayListener() {
-        OAVTLog.verbose("JWPlayer Ads event = adPlay")
+    adPlayListener(ev: any) {
+        OAVTLog.verbose("JWPlayer Ads event = adPlay", ev)
         // We put an AdBegin here because FreeWheel does not send an AdStart (IMA does).
+        this.storeAttributes(ev)
         this.instrument.emit(OAVTAction.AdBegin, this)
         this.instrument.emit(OAVTAction.AdPauseFinish, this)
     }
@@ -200,5 +198,19 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
 
     getAdCreativeId() {
         return this.adCreativeId
+    }
+
+    getAdClient() {
+        return this.adClient
+    }
+
+    private storeAttributes(ev: any) {
+        this.adId = ev.adId || ev.id
+        this.adSystem = ev.adsystem
+        this.adTitle = ev.adtitle
+        this.adDuration = ev.duration
+        this.adCreativeId = ev.ima?.ad?.g?.creativeId
+        this.adRoll = ev.adposition
+        this.adClient = ev.client
     }
 }
