@@ -10,7 +10,12 @@ export class OAVTHubCoreAds extends OAVTHubCore {
 
     override processEvent(event: OAVTEvent, tracker: OAVTTrackerInterface): OAVTEvent {
         if (event.getAction().getActionName() == OAVTAction.AdBreakBegin.getActionName()) {
-            this.setInAdBreakState(true)
+            if (!tracker.state.inAdBreak) {
+                this.setInAdBreakState(true)
+            }
+            else {
+                return null
+            }
         }
         else if (event.getAction().getActionName() == OAVTAction.AdBreakFinish.getActionName()) {
             if (tracker.state.inAdBreak) {
@@ -21,13 +26,18 @@ export class OAVTHubCoreAds extends OAVTHubCore {
             }
         }
         else if (event.getAction().getActionName() == OAVTAction.AdBegin.getActionName()) {
-            this.instrument.startPing(tracker.trackerId, 30000)
-            this.setInAdState(true)
-            this.countAds++
+            if (!tracker.state.inAd) {
+                this.instrument.startPing(tracker.trackerId, 30000)
+                this.setInAdState(true)
+                this.countAds++
+            }
+            else {
+                return null
+            }
         }
         else if (event.getAction().getActionName() == OAVTAction.AdFinish.getActionName()) {
-            this.instrument.stopPing(tracker.trackerId)
             if (tracker.state.inAd) {
+                this.instrument.stopPing(tracker.trackerId)
                 this.setInAdState(false)
             }
             else {
