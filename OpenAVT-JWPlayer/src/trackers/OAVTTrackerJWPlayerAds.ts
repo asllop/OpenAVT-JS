@@ -129,6 +129,8 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
 
     adBreakEndListener() {
         OAVTLog.verbose("JWPlayer Ads event = adBreakEnd")
+        // Force AdFinish when an ad beak ends.
+        this.instrument.emit(OAVTAction.AdFinish, this)
         this.instrument.emit(OAVTAction.AdBreakFinish, this)
     }
 
@@ -155,6 +157,8 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
 
     adPlayListener() {
         OAVTLog.verbose("JWPlayer Ads event = adPlay")
+        // We put an AdBegin here because FreeWheel does not send an AdStart (IMA does).
+        this.instrument.emit(OAVTAction.AdBegin, this)
         this.instrument.emit(OAVTAction.AdPauseFinish, this)
     }
 
@@ -191,7 +195,7 @@ export class OAVTTrackerJWPlayerAds implements OAVTTrackerInterface {
     }
     
     getAdDuration() {
-        return this.adDuration * 1000
+        return this.adDuration ? this.adDuration * 1000 : null
     }
 
     getAdCreativeId() {

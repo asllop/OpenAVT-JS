@@ -12,28 +12,54 @@
         OpenAVT.OAVTLog.setLogLevel(OpenAVT.LogLevel.Verbose)
         OpenAVT.OAVTLog.verbose("Hello Example1 of JWPlayer Tracker");
 
-        let player = jwplayer("videoPlayer").setup({
-            playlist: [/*{
-                title: "yyyyyy",
-                file: "http://docs.evostream.com/sample_content/assets/hls-bunny-rangerequest/playlist.m3u8"
-            },*/
-            {
-                title: "Kite DASH",
-                file: "https://demos.transloadit.com/dashtest/my_playlist.mpd"
-            },
-            {
-                title: "Parkour DASH",
-                file: "https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd"
-            },
-            {
-                title: "Airshow Live HSL",
-                file: "http://cdn3.viblast.com/streams/hls/airshow/playlist.m3u8"
-            }],
+        let playlist = [{
+            title: "Kite DASH",
+            file: "https://demos.transloadit.com/dashtest/my_playlist.mpd"
+        },
+        {
+            title: "Parkour DASH",
+            file: "https://bitmovin-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd"
+        },
+        {
+            title: "Airshow Live HSL",
+            file: "http://cdn3.viblast.com/streams/hls/airshow/playlist.m3u8"
+        }]
+
+        let jwConfig_freewheel = {
+            playlist: playlist,
+            fwassetid: 'jw_test_asset_h',
+            duration: 500,
+            advertising: {
+                client: 'freewheel',
+                freewheel: {
+                networkid: 90750,
+                // The 'adManagerUrl' should be the URL you receive from Freewheel.
+                adManagerUrl: "https://mssl.fwmrm.net/p/jw_html5_test/AdManager.js",
+                serverid: "https://demo.v.fwmrm.net/ad/g/1",
+                profileid: "90750:jw_html5_test",
+                sectionid: "jw_test_site_section"
+                },
+                adscheduleid: '12345',
+                schedule: {
+                    adbreak: {
+                        offset: 'pre',
+                        tag: 'placeholder_preroll'
+                    }
+                },
+                vpaidcontrols: true,
+                skipoffset: 3
+            }
+        }
+
+        let jwConfig_ima = {
+            playlist: playlist,
             advertising: {
                 client: "googima",
                 schedule: "http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=xml_vmap1&unviewed_position_start=1&cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&cmsid=496&vid=short_onecue&correlator="
             }
-        });
+        }
+
+        let player = jwplayer("videoPlayer").setup(jwConfig_ima);
 
         let fakeBackend = {
             endOfService: function() {
