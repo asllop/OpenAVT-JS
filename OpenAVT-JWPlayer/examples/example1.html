@@ -59,7 +59,33 @@
             }
         }
 
-        let player = jwplayer("videoPlayer").setup(jwConfig_ima);
+        let jwConfig_dai = {
+            "playlist": [{
+                file: "https://cdn.jwplayer.com/manifests/Qlh3p9ly.m3u8",
+                daiSetting: {
+                    cmsID: 2477953,
+                    videoID: "tears-of-steel"
+                }
+            }],
+            advertising: {
+                client: "dai"
+            }
+        }
+
+        let jwConfig_vast = {
+            playlist: 'https://cdn.jwplayer.com/v2/media/q1fx20VZ',
+            advertising: {
+                client: 'vast',
+                companiondiv: {
+                    id: 'adrectangle',
+                    height: 250,
+                    width: 300
+                }//,
+                //schedule: 'assets/vmap.xml'
+            }
+        }
+
+        let player = jwplayer("videoPlayer").setup(jwConfig_vast);
 
         let fakeBackend = {
             endOfService: function() {
