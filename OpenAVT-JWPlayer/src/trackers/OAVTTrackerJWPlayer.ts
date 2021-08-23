@@ -286,15 +286,11 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
 
     getSubtitles() {
         let index = this.player.getCurrentCaptions()
-        if (index != null) {
-            let captions = this.player.getCaptionsList()
-            if (captions != null) {
-                if (index < captions.length) {
-                    let caption = captions[index]
-                    if (caption.id != null && caption.label != null && caption.id != "off") {
-                        return caption.label
-                    }
-                }
+        let captions = this.player.getCaptionsList()
+        if (index < captions?.length) {
+            let caption = captions[index]
+            if (caption.id != null && caption.label != null && caption.id != "off") {
+                return caption.label
             }
         }
         return null
