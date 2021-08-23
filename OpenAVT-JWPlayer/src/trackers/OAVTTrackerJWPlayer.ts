@@ -76,7 +76,7 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
         this.instrument.registerGetter(OAVTAttribute.source, this.getSource.bind(this), this)
         this.instrument.registerGetter(OAVTAttribute.bitrate, this.getBitrate.bind(this), this)
         this.instrument.registerGetter(OAVTAttribute.language, this.getLanguage.bind(this), this)
-        //this.instrument.registerGetter(OAVTAttribute.subtitles, this.getSubtitles.bind(this), this)
+        this.instrument.registerGetter(OAVTAttribute.subtitles, this.getSubtitles.bind(this), this)
         this.instrument.registerGetter(OAVTAttribute.isAdsTracker, this.getIsAdsTracker.bind(this), this)
     }
 
@@ -282,6 +282,22 @@ export class OAVTTrackerJWPlayer implements OAVTTrackerInterface {
         if (i >= 0) {
           return this.player?.getAudioTracks()[i]?.language
         }
+    }
+
+    getSubtitles() {
+        let index = this.player.getCurrentCaptions()
+        if (index != null) {
+            let captions = this.player.getCaptionsList()
+            if (captions != null) {
+                if (index < captions.length) {
+                    let caption = captions[index]
+                    if (caption.id != null && caption.label != null && caption.id != "off") {
+                        return caption.label
+                    }
+                }
+            }
+        }
+        return null
     }
 
     getIsAdsTracker() {
