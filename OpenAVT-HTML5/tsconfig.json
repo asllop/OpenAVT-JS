@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es5" /* Build to ES2015 */,
+    "module": "commonjs" /* using ES2015 modules */,
+    "lib": ["es2015", "dom"] /* Using ES2015 features and DOM APIs  */,
+    "declaration": true /* Generates corresponding'.d.ts' files. */,
+    "declarationDir": "./dist/typings/" /* build '.d.ts' files to ./dist/typeings */,
+    "outDir": "./dist/esm/" /* build to ./dist/esm/ */
+  },
+  "files": ["./src/index.ts"],
+  "include": ["./src/**/*.ts"]
+}

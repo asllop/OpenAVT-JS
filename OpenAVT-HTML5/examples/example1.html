@@ -1,0 +1,36 @@
+<html>
+<head>
+    <!-- OpenAVT Core + HTML5 -->
+    <script src="/dist/umd/openavt-html5.js"></script>
+</head>
+<body>
+    <video id="html5Player" controls height="95%" width="100%">
+        <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+    </video>
+    <script>
+        OpenAVT.OAVTLog.setLogLevel(OpenAVT.LogLevel.Verbose)
+        OpenAVT.OAVTLog.verbose("Hello Example1 of HTML5 Tracker");
+
+        let player = document.getElementById('html5Player')
+
+        let fakeBackend = {
+            endOfService: function() {
+                OpenAVT.OAVTLog.verbose("Fake Backend enfOfService")
+            },
+            instrumentReady: function(instrument) {
+                OpenAVT.OAVTLog.verbose("Fake Backend instrumentReady", instrument)
+            },
+            sendEvent: function(ev) {
+                OpenAVT.OAVTLog.verbose("Fake Backend sendEvent ->", ev.action.actionName, ev.getDictionary(), ev)
+            },
+            sendMetric: function(mt) {
+                OpenAVT.OAVTLog.verbose("Fake Backend sendMetric", mt)
+            }
+        }
+
+        let instrument = new OpenAVT.OAVTInstrument(new OpenAVT.OAVTHubCore(), fakeBackend);
+        let trackerId = instrument.addTracker(new OpenAVT.OAVTTrackerHTML5(player));
+        instrument.ready()
+    </script>
+</body>
+</html>
