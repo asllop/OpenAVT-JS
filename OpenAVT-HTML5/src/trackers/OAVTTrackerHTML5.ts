@@ -7,8 +7,6 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
 
     private player: any = null
     private instrument: OAVTInstrument = null
-    private lastResolutionHeight = 0
-    private lastResolutionWidth = 0
     private lastErr: any = null
 
     /**
@@ -24,6 +22,7 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
 
     initEvent(event: OAVTEvent): OAVTEvent {
         if (event.getAction().getActionName() == OAVTAction.Error.getActionName()) {
+            //TODO: error attributes
             //event.setAttribute(OAVTAttribute.errorDescription, this.lastErr.message)
             //event.setAttribute(OAVTAttribute.errorCode, this.lastErr.code)
             //event.setAttribute(OAVTAttribute.errorType, this.lastErr.type)
@@ -116,6 +115,8 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
     
     loadstartListener() {
         OAVTLog.verbose("HTML5 event = loadstart")
+        this.instrument?.emit(OAVTAction.StreamLoad, this)
+        this.instrument?.emit(OAVTAction.BufferBegin, this)
     }
 
     loadedmetadataListener() {
@@ -124,6 +125,7 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
 
     loadeddataListener() {
         OAVTLog.verbose("HTML5 event = loadeddata")
+        this.instrument?.emit(OAVTAction.BufferFinish, this)
     }
 
     canplayListener() {
@@ -136,18 +138,23 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
 
     playingListener() {
         OAVTLog.verbose("HTML5 event = playing")
+        this.instrument?.emit(OAVTAction.Start, this)
+        this.instrument?.emit(OAVTAction.PauseFinish, this)
     }
 
     pauseListener() {
         OAVTLog.verbose("HTML5 event = pause")
+        this.instrument?.emit(OAVTAction.PauseBegin, this)
     }
 
     seekingListener() {
         OAVTLog.verbose("HTML5 event = seeking")
+        this.instrument?.emit(OAVTAction.SeekBegin, this)
     }
 
     seekedListener() {
         OAVTLog.verbose("HTML5 event = seeked")
+        this.instrument?.emit(OAVTAction.SeekFinish, this)
     }
 
     errorListener() {
@@ -156,6 +163,7 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
 
     endedListener() {
         OAVTLog.verbose("HTML5 event = ended")
+        this.instrument?.emit(OAVTAction.End, this)
     }
 
     waitingListener() {
@@ -169,61 +177,38 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
     }
 
     getPosition() {
-        return 0
+        return Math.round(this.player.currentTime * 1000)
     }
 
     getDuration() {
-        return 0
+        return Math.round(this.player.duration * 1000)
     }
 
     getResolutionHeight() {
-        return 0
+        return this.player.videoHeight
     }
 
     getResolutionWidth() {
-        return 0
+        return this.player.videoWidth
     }
 
     getIsMuted() {
-        return false
+        return this.player.muted
     }
 
     getVolume() {
-        return 0
+        return Math.round(this.player.volume * 100)
     }
 
     getSource() {
-        return ""
+        return this.player.currentSrc
     }
 
     getLanguage() {
-        return ""
+        return this.player.lang != "" ? this.player.lang : null
     }
 
     getIsAdsTracker() {
         return false
-    }
-
-    private checkResolutionChange() {
-        let currH = this.getResolutionHeight()
-        let currW = this.getResolutionWidth()
-        if (this.lastResolutionWidth == 0 || this.lastResolutionHeight == 0) {
-            this.lastResolutionHeight = currH
-            this.lastResolutionWidth = currW
-        }
-        else {
-            let lastMul = this.lastResolutionHeight * this.lastResolutionWidth
-            let currMul = currH * currW
-            
-            if (lastMul > currMul) {
-                this.instrument?.emit(OAVTAction.QualityChangeDown, this)
-            }
-            else if (lastMul < currMul) {
-                this.instrument?.emit(OAVTAction.QualityChangeUp, this)
-            }
-            
-            this.lastResolutionHeight = currH
-            this.lastResolutionWidth = currW
-        }
     }
 }
