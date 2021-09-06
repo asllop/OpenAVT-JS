@@ -7,7 +7,6 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
 
     private player: any = null
     private instrument: OAVTInstrument = null
-    private lastErr: any = null
 
     /**
      * Build an OpenAVT HTML5 tracker.
@@ -22,10 +21,9 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
 
     initEvent(event: OAVTEvent): OAVTEvent {
         if (event.getAction().getActionName() == OAVTAction.Error.getActionName()) {
-            //TODO: error attributes
-            //event.setAttribute(OAVTAttribute.errorDescription, this.lastErr.message)
-            //event.setAttribute(OAVTAttribute.errorCode, this.lastErr.code)
-            //event.setAttribute(OAVTAttribute.errorType, this.lastErr.type)
+            event.setAttribute(OAVTAttribute.errorDescription, this.player.error.message)
+            event.setAttribute(OAVTAttribute.errorCode, this.player.error.code)
+            event.setAttribute(OAVTAttribute.errorType, "error")
         }
         return event
     }
@@ -139,6 +137,7 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
     playingListener() {
         OAVTLog.verbose("HTML5 event = playing")
         this.instrument?.emit(OAVTAction.Start, this)
+        this.instrument?.emit(OAVTAction.BufferFinish, this)
         this.instrument?.emit(OAVTAction.PauseFinish, this)
     }
 
@@ -154,11 +153,13 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
 
     seekedListener() {
         OAVTLog.verbose("HTML5 event = seeked")
+        this.instrument?.emit(OAVTAction.BufferFinish, this)
         this.instrument?.emit(OAVTAction.SeekFinish, this)
     }
 
     errorListener() {
-        OAVTLog.verbose("HTML5 event = error")
+        OAVTLog.verbose("HTML5 event = error", this.player.error)
+        this.instrument?.emit(OAVTAction.Error, this)
     }
 
     endedListener() {
@@ -168,6 +169,7 @@ export class OAVTTrackerHTML5 implements OAVTTrackerInterface {
 
     waitingListener() {
         OAVTLog.verbose("HTML5 event = waiting")
+        this.instrument?.emit(OAVTAction.BufferBegin, this)
     }
 
     // Attribute getters

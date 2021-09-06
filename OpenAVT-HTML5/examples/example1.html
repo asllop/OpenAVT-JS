@@ -11,7 +11,7 @@
         OpenAVT.OAVTLog.setLogLevel(OpenAVT.LogLevel.Verbose)
         OpenAVT.OAVTLog.verbose("Hello Example1 of HTML5 Tracker");
 
-        let player = document.getElementById('html5Player')
+        const player = document.querySelector('#html5Player');
 
         let fakeBackend = {
             endOfService: function() {
@@ -31,6 +31,9 @@
         let instrument = new OpenAVT.OAVTInstrument(new OpenAVT.OAVTHubCore(), fakeBackend);
         let trackerId = instrument.addTracker(new OpenAVT.OAVTTrackerHTML5(player));
         instrument.ready()
+
+        // Force an error
+        //player.setAttribute('src', 'https://path/to/video.webm');
     </script>
 </body>
 </html>
