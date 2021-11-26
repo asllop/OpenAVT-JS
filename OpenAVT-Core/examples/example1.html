@@ -41,15 +41,21 @@
                 OpenAVT.OAVTLog.verbose("Fake Backend instrumentReady", instrument)
             },
             sendEvent: function(ev) {
-                OpenAVT.OAVTLog.verbose("Fake Backend sendEvent", ev)
                 OpenAVT.OAVTLog.debug("Fake Backend sendEvent ->", ev.action.actionName, ev.getDictionary(), ev)
             },
             sendMetric: function(mt) {
-                OpenAVT.OAVTLog.verbose("Fake Backend sendMetric", mt)
+                OpenAVT.OAVTLog.debug("Fake Backend sendMetric ->", mt)
             }
         }
         
-        let instrument = new OpenAVT.OAVTInstrument(new OpenAVT.OAVTHubCore(), fakeBackend);
+        let instrument = new OpenAVT.OAVTInstrument(
+            // Hub
+            new OpenAVT.OAVTHubCore(),
+            // Backend
+            fakeBackend,
+            // Metricalc
+            new OpenAVT.OAVTMetricalcCore()
+        );
         let trackerId = instrument.addTracker(fakeTracker);
         instrument.ready()
 
