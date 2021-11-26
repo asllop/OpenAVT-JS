@@ -4,8 +4,8 @@ import { OAVTSample } from "../models/OAVTSample"
  * Buffer for samples.
  */
 export class OAVTBuffer {
-    private buffer : OAVTSample[] = []
-    private size = 0
+    protected buffer : OAVTSample[] = []
+    protected size = 0
 
     /**
      * OAVTBuffer constructor.
